@@ -102,6 +102,7 @@ namespace Parser
                 Block completedBlock = parseBlockDataIntoClass(blockData);
             }
         }
+
         private static Block parseBlockDataIntoClass(byte[] blockByteArray)
         {
             uint cursor = 0;
