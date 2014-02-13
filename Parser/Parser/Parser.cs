@@ -29,6 +29,7 @@ namespace Parser
                 else
                 {
                     shouldExit = true;
+                    Console.WriteLine(ScryptExtraction.counter.ToString());
                     Console.WriteLine("Done.");
                     Console.ReadLine();
                 }
@@ -100,6 +101,7 @@ namespace Parser
                     return;
                 }
                 Block completedBlock = parseBlockDataIntoClass(blockData);
+                
             }
         }
 
