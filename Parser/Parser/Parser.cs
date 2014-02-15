@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Parser.MySQLClasses;
 
 namespace Parser
 {
@@ -29,8 +30,10 @@ namespace Parser
                 else
                 {
                     shouldExit = true;
-                    Console.WriteLine(ScryptExtraction.counter.ToString());
                     Console.WriteLine("Done.");
+                    Console.WriteLine("Outputs" + ScryptParser.outputs.ToString());
+                    Console.WriteLine("Invalid : " + ScryptParser.invalidOutputAddresses.ToString());
+                    Console.WriteLine("Unparsible : " + ScryptParser.unparsibleOuptuAddresses.ToString());
                     Console.ReadLine();
                 }
             }
@@ -101,7 +104,7 @@ namespace Parser
                     return;
                 }
                 Block completedBlock = parseBlockDataIntoClass(blockData);
-                
+                MySQLBlockHelper.pushToMySQL(completedBlock);
             }
         }
 
@@ -122,6 +125,7 @@ namespace Parser
             for (ulong i = 0; i < block.VL_transactionCount; i++)
             {
                 Transaction transaction = new Transaction();
+                uint transactionCursor = cursor;
                 transaction.transactionVersionNumber = parseFourBytesToElement(ref cursor, ref blockByteArray);
                 transaction.VL_inputCount = parseVaribleLengthInteger(ref cursor, ref blockByteArray);
 
@@ -129,8 +133,8 @@ namespace Parser
                 for (ulong j = 0; j < transaction.VL_inputCount; j++)
                 {
                     Input input = new Input();
-                    input.transactionHash = parseThirtyTwoBytesToElement(ref cursor, ref blockByteArray);
-                    input.transactionIndex = parseFourBytesToElement(ref cursor, ref blockByteArray);
+                    input.previousTransactionHash = parseThirtyTwoBytesToElement(ref cursor, ref blockByteArray);
+                    input.previousTransactionIndex = parseFourBytesToElement(ref cursor, ref blockByteArray);
                     input.VL_scriptLength = parseVaribleLengthInteger(ref cursor, ref blockByteArray);
                     input.VL_inputScript = parseCustomLengthToElement(ref cursor, ref blockByteArray, input.VL_scriptLength);
                     input.sequenceNumber = parseFourBytesToElement(ref cursor, ref blockByteArray);
@@ -147,13 +151,16 @@ namespace Parser
                     output.value = parseEightBytesToElement(ref cursor, ref blockByteArray);
 
                     output.VL_outputScriptLength = parseVaribleLengthInteger(ref cursor, ref blockByteArray);
-                    output.VL_publicKeyAddress = parseCustomLengthToElement(ref cursor, ref blockByteArray, output.VL_outputScriptLength);
+                    output.publicKeyAddress = ScryptParser.getPublicKey(parseCustomLengthToElement(ref cursor, ref blockByteArray, output.VL_outputScriptLength));
 
                     transaction.outputs.Add(output);
                 }
 
                 transaction.transactionLockTime = parseFourBytesToElement(ref cursor, ref blockByteArray);
 
+                byte[] wholeTransactionData = new byte[cursor - transactionCursor];
+                Array.Copy(blockByteArray, transactionCursor, wholeTransactionData, 0, cursor - transactionCursor);
+                transaction.thisTransactionHash = wholeTransactionData;
                 block.transactions.Add(transaction);
             }
             return block;
@@ -176,7 +183,6 @@ namespace Parser
         {
             byte[] buffer = new byte[32];
             Array.Copy(blockByteArray, cursor, buffer, 0, 32);
-            //Array.Reverse(buffer);
             cursor += 32;
             return buffer;
         }

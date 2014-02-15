@@ -7,8 +7,8 @@ namespace Parser
 {
     public class Input
     {
-        public byte[] transactionHash;
-        public uint transactionIndex;
+        public byte[] previousTransactionHash;
+        public uint previousTransactionIndex;
         public ulong VL_scriptLength;
         public byte[] VL_inputScript;
         public uint sequenceNumber;

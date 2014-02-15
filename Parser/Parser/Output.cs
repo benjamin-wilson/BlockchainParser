@@ -9,6 +9,6 @@ namespace Parser
     {
         public ulong value;
         public ulong VL_outputScriptLength;
-        public byte[] VL_publicKeyAddress;
+        public string publicKeyAddress;
     }
 }

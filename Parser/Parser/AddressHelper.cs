@@ -1,19 +1,19 @@
 ﻿using System;
-using System.Globalization;
-using System.Security.Cryptography;
-using System.Numerics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
+using System.Security.Cryptography;
+using System.Numerics;
 
 namespace Parser
 {
-    public static class AddressFormatter
+    class AddressHelper
     {
         public static string EllipticCurveToBTCAddress(byte[] key)
         {
-            byte[] PreHashQ = AppendBitcoinNetwork(RipeMD160(Sha256(key)),0);
+            byte[] PreHashQ = AppendBitcoinNetwork(RipeMD160(Sha256(key)), 0);
             return Base58Encode(ConcatAddress(PreHashQ, Sha256(Sha256(PreHashQ))));
         }
 
