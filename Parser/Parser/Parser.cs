@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Parser.MySQLClasses;
+using Blockchain;
+using Database;
 
 namespace Parser
 {
@@ -15,6 +16,7 @@ namespace Parser
         static public void Parse()
         {
             int fileIndex = 0;
+            DBConnect mysql = new DBConnect();
             while (!shouldExit)
             {
                 
@@ -23,7 +25,7 @@ namespace Parser
                 {
                     byte[] currentFile = File.ReadAllBytes(fileName);
                     //List<uint> blockIndexes = buildIndex(ref currentFile);
-                    parseFileDataIntoClasses(ref currentFile);
+                    parseFileDataIntoClasses(ref currentFile, mysql);
                     fileIndex++;
                     Console.WriteLine("Finished proccessing file " + fileName);
                 }
@@ -92,7 +94,7 @@ namespace Parser
             }
             return null;
         }
-        private static void parseFileDataIntoClasses(ref byte[] currentFile)
+        private static void parseFileDataIntoClasses(ref byte[] currentFile,DBConnect mysql)
         {
             uint fileCursor = 0;
             while(seekToNextHeader(ref fileCursor, ref currentFile))
@@ -103,8 +105,9 @@ namespace Parser
                     // null means end of file
                     return;
                 }
+                
                 Block completedBlock = parseBlockDataIntoClass(blockData);
-                MySQLBlockHelper.pushToMySQL(completedBlock);
+                MySQLBlockHelper.pushToMySQL(completedBlock, mysql);
             }
         }
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Parser
+namespace Blockchain
 {
     public class Transaction
     {

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parser.MySQLClasses
+namespace Database
 {
     public class MySQLInput
     {
-        public byte[] transactionHash;
-        public byte[] previousTransactionHash;
+        public string transactionHash;
+        public string previousTransactionHash;
         public uint previousTransactionOutputIndex;
     }
 }

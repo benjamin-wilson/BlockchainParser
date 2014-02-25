@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Blockchain;
 
-namespace Parser.MySQLClasses
+namespace Database
 {
     public static class MySQLBlockHelper
     {
-        public static void pushToMySQL(Block block)
+        public static void pushToMySQL(Block block, DBConnect mysql)
         {
             List<MySQLInput> mysqlInputList = new List<MySQLInput>();
             List<MySQLOutput> mysqlOutputList = new List<MySQLOutput>();
@@ -18,8 +19,8 @@ namespace Parser.MySQLClasses
                 foreach(Input input in transaction.inputs)
                 {
                     MySQLInput mysqlInput = new MySQLInput();
-                    mysqlInput.transactionHash = transaction.thisTransactionHash;
-                    mysqlInput.previousTransactionHash = input.previousTransactionHash;
+                    mysqlInput.transactionHash = truncateTransactionHashSixteen(BitConverter.ToString(transaction.thisTransactionHash).Replace("-", string.Empty));
+                    mysqlInput.previousTransactionHash = truncateTransactionHashSixteen(BitConverter.ToString(input.previousTransactionHash).Replace("-", string.Empty));
                     mysqlInput.previousTransactionOutputIndex = input.previousTransactionIndex;
                     mysqlInputList.Add(mysqlInput);
                 }
@@ -30,16 +31,20 @@ namespace Parser.MySQLClasses
                     mysqlOutput.value = output.value;
                     mysqlOutput.publicAddress = output.publicKeyAddress;
                     mysqlOutput.index = outputIndexCounter;
-                    mysqlOutput.transactionHash = transaction.thisTransactionHash;
+                    mysqlOutput.transactionHash = truncateTransactionHashSixteen(BitConverter.ToString(transaction.thisTransactionHash).Replace("-", string.Empty));
                     mysqlOutput.timestamp = block.timeStamp;
                     mysqlOutputList.Add(mysqlOutput);
                     outputIndexCounter++;
                 }
             }
-            DBConnect mysql = new DBConnect();
+            
             mysql.InsertInputs(mysqlInputList);
             mysql.InsertOutputs(mysqlOutputList);
 
+        }
+        private static string truncateTransactionHashSixteen(string hash)
+        {
+            return hash.Substring(0, 16);
         }
     }
 }

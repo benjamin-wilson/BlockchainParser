@@ -7,9 +7,9 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Numerics;
 
-namespace Parser
+namespace Blockchain
 {
-    class AddressHelper
+    public class AddressHelper
     {
         public static string EllipticCurveToBTCAddress(byte[] key)
         {
