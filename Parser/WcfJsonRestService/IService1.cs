@@ -6,6 +6,7 @@ using System.ServiceModel;
 using System.Text;
 using Database;
 using System.ServiceModel.Web;
+using Mining;
 
 namespace WcfJsonRestService
 {
@@ -15,14 +16,7 @@ namespace WcfJsonRestService
     {
         [WebInvoke(Method = "GET",
             ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "recived/{id}")]
-        List<JSON> getRecivedFrom(string id);
-
-        [WebInvoke(Method = "GET",
-            ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "sent/{id}")]
-        List<JSON> getSentTo(string id);
-
-
+            UriTemplate = "/{id}")]
+        JSONHolder getjson(string id);
     }
 }

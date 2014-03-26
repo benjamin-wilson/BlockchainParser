@@ -353,14 +353,14 @@ namespace Database
         {
             List<JSON> jsonList = new List<JSON>();
             StringBuilder query = new StringBuilder();
-            query.Append("select totals.publicAddress as source ,totals.value,output.publicAddress as target ");
-            query.Append("from output,( SELECT previousTransactionHash, value, previousTransactionOutputIndex,publicAddress ");
+            query.Append("select totals.publicAddress as source,output.publicAddress as target,totals.value ");
+            query.Append("from output,(SELECT input.transactionHash,output.value,output.publicAddress ");
             query.Append("from input ");
-            query.Append("join output on input.transactionHash = output.transactionHash ");
+            query.Append("join output on input.previousTransactionHash = output.transactionHash and input.previousTransactionOutputIndex = output.outputIndex ");
             query.Append("where publicAddress = '");
             query.Append(address);
             query.Append("') AS totals ");
-            query.Append("where totals.previousTransactionHash = output.transactionHash and totals.previousTransactionOutputIndex = output.outputIndex;");
+            query.Append("where totals.transactionHash = output.transactionHash;");
 
             if (this.OpenConnection() == true)
             {

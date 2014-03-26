@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Database;
 
-
-namespace Parser
+namespace Mining
 {
-    class Program
+    public class JSONHolder
     {
-
-        static void Main(string[] args)
-        {
-            Parser.Parse();
-        }
+        public List<Node> nodes;
+        public List<Link> edges;
     }
 }

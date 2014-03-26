@@ -85,6 +85,10 @@
       <Project>{f67f81b3-645a-43ec-83e5-498a5822ba51}</Project>
       <Name>Database</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mining\Mining.csproj">
+      <Project>{f00ea781-191f-402b-8701-d5fd4abceb7c}</Project>
+      <Name>Mining</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

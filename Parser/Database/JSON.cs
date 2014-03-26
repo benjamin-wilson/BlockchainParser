@@ -8,8 +8,9 @@ namespace Database
 {
     public class JSON
     {
-        public string source;
-        public string target;
-        public ulong value;
+            public string source;
+            public string target;
+            public ulong value;
+
     }
 }
