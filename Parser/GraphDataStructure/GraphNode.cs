@@ -6,34 +6,40 @@ using System.Threading.Tasks;
 
 namespace GraphDataStructure
 {
-    public class GraphNode<T> : Node<T>
+    public class GraphNode
     {
-        private List<int> costs;
+        private string _address;
+        private LinkedList<GraphNode> _neighbors;
+        private List<int> _cost; // This is used to create a weighted graph
 
-        public GraphNode() : base() { }
-        public GraphNode(T value) : base(value) { }
-        public GraphNode(T value, NodeList<T> neighbors) : base(value, neighbors) { }
-
-        new public NodeList<T> Neighbors
+        public GraphNode()
         {
-            get
-            {
-                if (base.Neighbors == null)
-                    base.Neighbors = new NodeList<T>();
-
-                return base.Neighbors;
-            }
+            this._address = null;
+            this._neighbors = new LinkedList<GraphNode>();
         }
 
-        public List<int> Costs
+        public GraphNode(string data)
         {
-            get
-            {
-                if (costs == null)
-                    costs = new List<int>();
+            this._address = data;
+            this._neighbors = new LinkedList<GraphNode>();
+        }
 
-                return costs;
-            }
+        public GraphNode(string data, LinkedList<GraphNode> neighbors)
+        {
+            this._address = data;
+            this._neighbors = neighbors;
+        }
+
+        public string Address
+        {
+            set { this._address = value; }
+            get { return this._address; }
+        }
+
+        public LinkedList<GraphNode> Neighbors
+        {
+            set { this._neighbors = value; }
+            get { return this._neighbors; }
         }
     }
 }
