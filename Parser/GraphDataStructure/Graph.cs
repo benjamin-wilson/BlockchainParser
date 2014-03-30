@@ -33,7 +33,12 @@ namespace GraphDataStructure
 
         public void addGraphNode(string node)
         {
-            this._nodeSet.AddLast(new GraphNode(node));
+            if (getGraphNode(new GraphNode(node)) == -1)
+            {
+                this._nodeSet.AddLast(new GraphNode(node));
+            }
+            else
+                return;
         }
 
         public void addDirectedEdge(GraphNode from, GraphNode to)
@@ -58,7 +63,7 @@ namespace GraphDataStructure
                     return i;
                 }
             }
-            return 0;
+            return -1;
         }
 
         public bool exists(GraphNode node)
@@ -74,10 +79,10 @@ namespace GraphDataStructure
             {
                 this._nodeSet.Remove(nodeToRemove);
 
-                //foreach (var item in this._nodeSet)
-                //{
-                //    item.Neighbors.Remove(nodeToRemove);
-                //}
+                foreach (var item in this._nodeSet)
+                {
+                    item.Neighbors.Remove(nodeToRemove);
+                }
             }
         }
 
@@ -87,8 +92,7 @@ namespace GraphDataStructure
 
             foreach(var node in endNodes)
             {
-                if(node.Neighbors.Count < 1)
-                    removeNode(node);
+                removeNode(node);
             }
         }
 
@@ -96,9 +100,11 @@ namespace GraphDataStructure
         {
             var nodesToRemoveList = new List<GraphNode>();
 
-            foreach(var node in this._nodeSet)
+            for (int i = 0; i < this._nodeSet.Count; i++ )
             {
-                if(node.Neighbors.Count < 1)
+                var node = this._nodeSet.ElementAt(i);
+
+                if (node.Neighbors.Count < 1 || node == null)
                 {
                     nodesToRemoveList.Add(node);
                 }
@@ -143,7 +149,8 @@ namespace GraphDataStructure
 
         public static Graph populate(string publicAddress)
         {
-            int count = 0; 
+            //int count = 0; Used For testing
+ 
             Queue<string> nextAddresses = new Queue<string>();
             GraphDataStructure.Graph graphList = new GraphDataStructure.Graph();
 
@@ -162,7 +169,8 @@ namespace GraphDataStructure
                 {
                     nextAddresses.Enqueue(sender.target);
                     graphList.addGraphNode(sender.target);
-
+                    
+                    
                     graphList.addDirectedEdge(sender.source, sender.target);
                     // Console.WriteLine(sender.source + "     " + sender.target);
                 }
@@ -171,12 +179,11 @@ namespace GraphDataStructure
                 {
                     nextAddresses.Enqueue(reciver.source);
                     graphList.addGraphNode(reciver.source);
+                    
 
                     graphList.addDirectedEdge(reciver.source, reciver.target);
                     //  Console.WriteLine(reciver.source + "    " + reciver.target);
                 }
-
-                count++;
             }
 
             return graphList;

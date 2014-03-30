@@ -14,7 +14,7 @@ namespace GraphDataStructure
             var temp = GraphDataStructure.Graph.populate("1Ka3xYZb6tZQabpkFCnpqods6gC8iNEcZ7");
 
             temp.removeEndNodes();
-            //temp.writeListToFile();
+            temp.writeListToFile();
         }
     }
 }
