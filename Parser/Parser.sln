@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Parser\Parser.csproj", "{E5D18476-3C8B-47D3-A793-FD9251CB1164}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockchain", "Blockchain\Blockchain.csproj", "{18B9AF55-A9A2-4867-A917-56EF913D41C8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphDataStructure", "GraphDataStructure\GraphDataStructure.csproj", "{DCA5B6D5-4AB9-4296-8177-67150292A466}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Run", "Run\Run.csproj", "{4E192A6F-DFB9-4922-993F-1C6407E8B1AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{DCA5B6D5-4AB9-4296-8177-67150292A466}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCA5B6D5-4AB9-4296-8177-67150292A466}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCA5B6D5-4AB9-4296-8177-67150292A466}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E192A6F-DFB9-4922-993F-1C6407E8B1AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E192A6F-DFB9-4922-993F-1C6407E8B1AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E192A6F-DFB9-4922-993F-1C6407E8B1AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E192A6F-DFB9-4922-993F-1C6407E8B1AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

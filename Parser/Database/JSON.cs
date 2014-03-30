@@ -11,6 +11,5 @@ namespace Database
             public string source;
             public string target;
             public ulong value;
-
     }
 }

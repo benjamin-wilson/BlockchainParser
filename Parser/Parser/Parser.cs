@@ -11,7 +11,7 @@ namespace Parser
 {
     static class Parser
     {
-        static string path = "S:\\Bitcoin\\Blockchain\\blocks\\";
+        static string path = @"C:\Users\New User\AppData\Roaming\Bitcoin\blocks\";
         static bool shouldExit = false;
         static public void Parse()
         {

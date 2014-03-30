@@ -74,11 +74,37 @@ namespace GraphDataStructure
             {
                 this._nodeSet.Remove(nodeToRemove);
 
-                foreach (var item in this._nodeSet)
+                //foreach (var item in this._nodeSet)
+                //{
+                //    item.Neighbors.Remove(nodeToRemove);
+                //}
+            }
+        }
+
+        public void removeEndNodes()
+        {
+            var endNodes = findEndNodes();
+
+            foreach(var node in endNodes)
+            {
+                if(node.Neighbors.Count < 1)
+                    removeNode(node);
+            }
+        }
+
+        public List<GraphNode> findEndNodes()
+        {
+            var nodesToRemoveList = new List<GraphNode>();
+
+            foreach(var node in this._nodeSet)
+            {
+                if(node.Neighbors.Count < 1)
                 {
-                    item.Neighbors.Remove(nodeToRemove);
+                    nodesToRemoveList.Add(node);
                 }
             }
+
+            return nodesToRemoveList;
         }
 
         public void displayList()
@@ -93,6 +119,25 @@ namespace GraphDataStructure
                 }
 
                 Console.WriteLine();
+            }
+        }
+
+        public void writeListToFile()
+        {
+            foreach (var gnode in this._nodeSet)
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Windows v2\AddressGraph2.txt", true))
+                {
+
+                    file.Write(gnode.Address + ":---->");
+
+                    foreach (var neighbor in gnode.Neighbors)
+                    {
+                        file.Write(neighbor.Address + " , ");
+                    }
+
+                    file.WriteLine();
+                }
             }
         }
     }

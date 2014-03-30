@@ -23,9 +23,9 @@ namespace Database
         {
             server = "localhost";
             database = "mydb";
-            uid = "admin";
-            password = "blackandyellow";
-            timeout = "120";
+            uid = "root";
+            password = "tiny";
+            timeout = "1200";
             string connectionString;
             connectionString = "SERVER=" + server + ";" + "DATABASE=" +
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";" + "Connect Timeout="+timeout;
@@ -97,6 +97,13 @@ namespace Database
                 isFirstElement = false;
             }
             query.Append(";");
+
+            //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Windows v2\bitcoinDatabaseLogs.txt", true))
+            //{
+            //    file.WriteLine(query);
+            //    file.WriteLine();
+            //}
+
             //open connection
             if (this.OpenConnection() == true)
             {
@@ -353,6 +360,7 @@ namespace Database
         {
             List<JSON> jsonList = new List<JSON>();
             StringBuilder query = new StringBuilder();
+
             query.Append("select totals.publicAddress as source,output.publicAddress as target,totals.value ");
             query.Append("from output,(SELECT input.transactionHash,output.value,output.publicAddress ");
             query.Append("from input ");
