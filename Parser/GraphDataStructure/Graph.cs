@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -145,11 +146,54 @@ namespace GraphDataStructure
                     file.WriteLine();
                 }
             }
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Windows v2\JsonString.txt", true))
+            {
+
+                file.WriteLine(buildJsonString());
+            }
+        }
+
+        public string buildJsonString()
+        {
+            StringBuilder jsonString = new StringBuilder("{ \"nodeSet\": [ ");
+            bool firstNeighborElement = true;
+            bool firstNodeSet = true;
+            
+            foreach (var node in this._nodeSet)
+            {
+                if(firstNodeSet)
+                {
+                    jsonString.Append("{\"address\":\"" + node.Address + "\",");
+                    firstNodeSet = false;
+                }
+                else
+                    jsonString.Append(",{\"address\":\"" + node.Address + "\",");
+
+                jsonString.Append("\"neighbors\":[");
+
+                foreach(var neighbor in node.Neighbors)
+                {
+                    if (firstNeighborElement)
+                    {
+                        jsonString.Append("\"" + neighbor.Address + "\"");
+                        firstNeighborElement = false;
+                    }
+                    else
+                    {
+                        jsonString.Append(",\"" + neighbor.Address + "\"");
+                    }
+                }
+
+                jsonString.Append("]");
+                jsonString.Append("}");
+            }
+            jsonString.Append("] }");
+            return jsonString.ToString();
         }
 
         public static Graph populate(string publicAddress)
         {
-            //int count = 0; Used For testing
+            int count = 0; //Used For testing
  
             Queue<string> nextAddresses = new Queue<string>();
             GraphDataStructure.Graph graphList = new GraphDataStructure.Graph();
@@ -157,7 +201,8 @@ namespace GraphDataStructure
             graphList.addGraphNode(publicAddress);
             nextAddresses.Enqueue(publicAddress);
 
-            while (nextAddresses.Count > 0)
+            //while (nextAddresses.Count > 0)
+            while (count < 1)
             {
                 Database.DBConnect getLists = new Database.DBConnect();
                 string current = nextAddresses.Dequeue();
@@ -184,6 +229,8 @@ namespace GraphDataStructure
                     graphList.addDirectedEdge(reciver.source, reciver.target);
                     //  Console.WriteLine(reciver.source + "    " + reciver.target);
                 }
+
+                count++;
             }
 
             return graphList;
