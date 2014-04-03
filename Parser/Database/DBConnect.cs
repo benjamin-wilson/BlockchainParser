@@ -25,7 +25,7 @@ namespace Database
             database = "mydb";
             uid = "root";
             password = "tiny";
-            timeout = "1200";
+            timeout = "120";
             string connectionString;
             connectionString = "SERVER=" + server + ";" + "DATABASE=" +
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";" + "Connect Timeout="+timeout;

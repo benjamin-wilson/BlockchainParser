@@ -129,11 +129,11 @@ namespace GraphDataStructure
             }
         }
 
-        public void writeListToFile()
+        public void writeListToFile(string fileName)
         {
             foreach (var gnode in this._nodeSet)
             {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Windows v2\AddressGraph2.txt", true))
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName, true))
                 {
 
                     file.Write(gnode.Address + ":---->");
@@ -145,11 +145,6 @@ namespace GraphDataStructure
 
                     file.WriteLine();
                 }
-            }
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Windows v2\JsonString.txt", true))
-            {
-
-                file.WriteLine(buildJsonString());
             }
         }
 
@@ -202,7 +197,7 @@ namespace GraphDataStructure
             nextAddresses.Enqueue(publicAddress);
 
             //while (nextAddresses.Count > 0)
-            while (count < 1)
+            while (count < 2) //Used for testing
             {
                 Database.DBConnect getLists = new Database.DBConnect();
                 string current = nextAddresses.Dequeue();
@@ -230,6 +225,10 @@ namespace GraphDataStructure
                     //  Console.WriteLine(reciver.source + "    " + reciver.target);
                 }
 
+                //if(count%100 == 0)
+                {
+                    Console.WriteLine("Still Alive: " + count);
+                }
                 count++;
             }
 

@@ -13,10 +13,12 @@ namespace GraphDataStructure
         static void Main(string[] args)
         {
             //Used for testing
-            //var temp = GraphDataStructure.Graph.populate("1Ka3xYZb6tZQabpkFCnpqods6gC8iNEcZ7");
-            
-            //temp.removeEndNodes();
-            //temp.writeListToFile();
+            var temp = GraphDataStructure.Graph.populate("1Ka3xYZb6tZQabpkFCnpqods6gC8iNEcZ7");
+
+            temp.writeListToFile(@"C:\Windows v2\BeforePruning.txt");
+
+            temp.removeEndNodes();
+            temp.writeListToFile(@"C:\Windows v2\AfterPruning.txt");
         }
     }
 }
