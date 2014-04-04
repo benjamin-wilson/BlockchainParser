@@ -105,7 +105,7 @@ namespace GraphDataStructure
             {
                 var node = this._nodeSet.ElementAt(i);
 
-                if (node.Neighbors.Count < 1 || node == null)
+                if (node.Neighbors.Count < 2 || node == null)
                 {
                     nodesToRemoveList.Add(node);
                 }
