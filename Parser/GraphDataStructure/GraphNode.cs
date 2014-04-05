@@ -10,7 +10,7 @@ namespace GraphDataStructure
     {
         private string _address;
         private LinkedList<GraphNode> _neighbors;
-        private List<int> _cost; // This is used to create a weighted graph
+        private List<decimal> _value; // This is used to create a weighted graph
 
         public GraphNode()
         {

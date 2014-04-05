@@ -207,7 +207,10 @@ namespace GraphDataStructure
 
                 foreach (var sender in sendersList)
                 {
-                    nextAddresses.Enqueue(sender.target);
+                    if(!nextAddresses.Contains(sender.target))
+                    {
+                        nextAddresses.Enqueue(sender.target);
+                    }
                     graphList.addGraphNode(sender.target);
                     
                     
@@ -217,10 +220,12 @@ namespace GraphDataStructure
 
                 foreach (var reciver in reciverList)
                 {
-                    nextAddresses.Enqueue(reciver.source);
-                    graphList.addGraphNode(reciver.source);
-                    
+                    if(!nextAddresses.Contains(reciver.source))
+                    { 
+                        nextAddresses.Enqueue(reciver.source);
+                    }
 
+                    graphList.addGraphNode(reciver.source);
                     graphList.addDirectedEdge(reciver.source, reciver.target);
                     //  Console.WriteLine(reciver.source + "    " + reciver.target);
                 }

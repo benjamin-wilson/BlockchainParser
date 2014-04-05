@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockchain", "Blockchain\Bl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphDataStructure", "GraphDataStructure\GraphDataStructure.csproj", "{DCA5B6D5-4AB9-4296-8177-67150292A466}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{B2DAA82D-5357-41AA-BFEB-C50DC3835E2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{DCA5B6D5-4AB9-4296-8177-67150292A466}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCA5B6D5-4AB9-4296-8177-67150292A466}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCA5B6D5-4AB9-4296-8177-67150292A466}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2DAA82D-5357-41AA-BFEB-C50DC3835E2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2DAA82D-5357-41AA-BFEB-C50DC3835E2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2DAA82D-5357-41AA-BFEB-C50DC3835E2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2DAA82D-5357-41AA-BFEB-C50DC3835E2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
