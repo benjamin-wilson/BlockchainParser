@@ -10,10 +10,12 @@ namespace GraphDataStructure
     public class Graph
     {
         private LinkedList<GraphNode> _nodeSet;
+        private static List<string> _previousAddresses; //Addresses that have already been search, will be used to skip them in the future
 
         public Graph()
         {
             this._nodeSet = new LinkedList<GraphNode>();
+            _previousAddresses = new List<string>();
         }
         public Graph(LinkedList<GraphNode> set)
         {
@@ -27,6 +29,10 @@ namespace GraphDataStructure
             }
         }
 
+        public LinkedList<GraphNode> NodeSet
+        {
+            get {return this._nodeSet;}
+        }
         public void addGraphNode(GraphNode node)
         {
             this._nodeSet.AddLast(node);
@@ -34,12 +40,7 @@ namespace GraphDataStructure
 
         public void addGraphNode(string node)
         {
-            if (getGraphNode(new GraphNode(node)) == -1)
-            {
-                this._nodeSet.AddLast(new GraphNode(node));
-            }
-            else
-                return;
+            this._nodeSet.AddLast(new GraphNode(node));
         }
 
         public void addDirectedEdge(GraphNode from, GraphNode to)
@@ -186,33 +187,33 @@ namespace GraphDataStructure
             return jsonString.ToString();
         }
 
-        public static Graph populate(string publicAddress)
+        public static Graph populate(string publicAddress, int degree)
         {
             int count = 0; //Used For testing
- 
+            
             Queue<string> nextAddresses = new Queue<string>();
             GraphDataStructure.Graph graphList = new GraphDataStructure.Graph();
 
             graphList.addGraphNode(publicAddress);
             nextAddresses.Enqueue(publicAddress);
-
+            
             //while (nextAddresses.Count > 0)
-            while (count < 2) //Used for testing
+            while (count < degree && nextAddresses.Count != 0) //Used for testing
             {
                 Database.DBConnect getLists = new Database.DBConnect();
                 string current = nextAddresses.Dequeue();
+                _previousAddresses.Add(current);
 
                 var sendersList = getLists.getSentTo(current);
                 var reciverList = getLists.getRecivedFrom(current);
 
                 foreach (var sender in sendersList)
                 {
-                    if(!nextAddresses.Contains(sender.target))
+                    if(!_previousAddresses.Contains(sender.target))
                     {
                         nextAddresses.Enqueue(sender.target);
+                        graphList.addGraphNode(sender.target);
                     }
-                    graphList.addGraphNode(sender.target);
-                    
                     
                     graphList.addDirectedEdge(sender.source, sender.target);
                     // Console.WriteLine(sender.source + "     " + sender.target);
@@ -220,12 +221,12 @@ namespace GraphDataStructure
 
                 foreach (var reciver in reciverList)
                 {
-                    if(!nextAddresses.Contains(reciver.source))
+                    if(!_previousAddresses.Contains(reciver.source))
                     { 
                         nextAddresses.Enqueue(reciver.source);
+                        graphList.addGraphNode(reciver.source);
                     }
 
-                    graphList.addGraphNode(reciver.source);
                     graphList.addDirectedEdge(reciver.source, reciver.target);
                     //  Console.WriteLine(reciver.source + "    " + reciver.target);
                 }
