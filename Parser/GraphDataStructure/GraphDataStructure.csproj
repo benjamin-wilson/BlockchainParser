@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Edge.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="GraphNode.cs" />
     <Compile Include="Program.cs" />

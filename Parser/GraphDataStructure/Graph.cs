@@ -43,17 +43,17 @@ namespace GraphDataStructure
             this._nodeSet.AddLast(new GraphNode(node));
         }
 
-        public void addDirectedEdge(GraphNode from, GraphNode to)
+        public void addDirectedEdge(GraphNode from, GraphNode to, decimal cost)
         {
-            from.Neighbors.AddFirst(to);
+            from.addNeighbor(to, cost);
         }
 
-        public void addDirectedEdge(string from, string to)
+        public void addDirectedEdge(string from, string to, decimal cost)
         {
             GraphNode fromNode = new GraphNode(from);
             GraphNode toNode = new GraphNode(to);
 
-            this._nodeSet.ElementAt(getGraphNode(fromNode)).Neighbors.AddFirst(this._nodeSet.ElementAt(getGraphNode(toNode)));
+            this._nodeSet.ElementAt(getGraphNode(fromNode)).addNeighbor(this._nodeSet.ElementAt(getGraphNode(toNode)), cost);
         }
 
         public int getGraphNode(GraphNode node)
@@ -75,7 +75,8 @@ namespace GraphDataStructure
 
         public void removeNode(GraphNode node)
         {
-            var nodeToRemove = this._nodeSet.ElementAt(getGraphNode(node));
+            int index = getGraphNode(node);
+            var nodeToRemove = this._nodeSet.ElementAt(index);
 
             if (nodeToRemove != null)
             {
@@ -83,7 +84,7 @@ namespace GraphDataStructure
 
                 foreach (var item in this._nodeSet)
                 {
-                    item.Neighbors.Remove(nodeToRemove);
+                    item.removeEdge(nodeToRemove);
                 }
             }
         }
@@ -123,7 +124,7 @@ namespace GraphDataStructure
 
                 foreach (var neighbor in gnode.Neighbors)
                 {
-                    Console.Write(neighbor.Address + "---->");
+                    Console.Write(neighbor.Target.Address + "---->");
                 }
 
                 Console.WriteLine();
@@ -134,14 +135,15 @@ namespace GraphDataStructure
         {
             foreach (var gnode in this._nodeSet)
             {
+                int count = 0;
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName, true))
                 {
-
                     file.Write(gnode.Address + ":---->");
 
                     foreach (var neighbor in gnode.Neighbors)
                     {
-                        file.Write(neighbor.Address + " , ");
+                        file.Write(neighbor.Target.Address + ":" + neighbor.Weight +" , ");
+                        count++;
                     }
 
                     file.WriteLine();
@@ -171,12 +173,12 @@ namespace GraphDataStructure
                 {
                     if (firstNeighborElement)
                     {
-                        jsonString.Append("\"" + neighbor.Address + "\"");
+                        jsonString.Append("\"" + neighbor.Target.Address + "\"");
                         firstNeighborElement = false;
                     }
                     else
                     {
-                        jsonString.Append(",\"" + neighbor.Address + "\"");
+                        jsonString.Append(",\"" + neighbor.Target.Address + "\"");
                     }
                 }
 
@@ -196,13 +198,13 @@ namespace GraphDataStructure
 
             graphList.addGraphNode(publicAddress);
             nextAddresses.Enqueue(publicAddress);
-            
+            _previousAddresses.Add(publicAddress);
+
             //while (nextAddresses.Count > 0)
             while (count < degree && nextAddresses.Count != 0) //Used for testing
             {
                 Database.DBConnect getLists = new Database.DBConnect();
                 string current = nextAddresses.Dequeue();
-                _previousAddresses.Add(current);
 
                 var sendersList = getLists.getSentTo(current);
                 var reciverList = getLists.getRecivedFrom(current);
@@ -212,10 +214,11 @@ namespace GraphDataStructure
                     if(!_previousAddresses.Contains(sender.target))
                     {
                         nextAddresses.Enqueue(sender.target);
+                        _previousAddresses.Add(sender.target);
                         graphList.addGraphNode(sender.target);
                     }
                     
-                    graphList.addDirectedEdge(sender.source, sender.target);
+                    graphList.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value));
                     // Console.WriteLine(sender.source + "     " + sender.target);
                 }
 
@@ -224,10 +227,11 @@ namespace GraphDataStructure
                     if(!_previousAddresses.Contains(reciver.source))
                     { 
                         nextAddresses.Enqueue(reciver.source);
+                        _previousAddresses.Add(reciver.source);
                         graphList.addGraphNode(reciver.source);
                     }
 
-                    graphList.addDirectedEdge(reciver.source, reciver.target);
+                    graphList.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value));
                     //  Console.WriteLine(reciver.source + "    " + reciver.target);
                 }
 

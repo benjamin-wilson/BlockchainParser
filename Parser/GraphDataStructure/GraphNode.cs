@@ -9,25 +9,28 @@ namespace GraphDataStructure
     public class GraphNode
     {
         private string _address;
-        private LinkedList<GraphNode> _neighbors;
-        private List<decimal> _value; // This is used to create a weighted graph
+        private LinkedList<Edge> _neighbors;
+         // This is used to create a weighted graph
 
         public GraphNode()
         {
             this._address = null;
-            this._neighbors = new LinkedList<GraphNode>();
+            this._neighbors = new LinkedList<Edge>();
+            //this._value = new List<decimal>();
         }
 
         public GraphNode(string data)
         {
             this._address = data;
-            this._neighbors = new LinkedList<GraphNode>();
+            this._neighbors = new LinkedList<Edge>();
+            //this._value = new List<decimal>();
         }
 
-        public GraphNode(string data, LinkedList<GraphNode> neighbors)
+        public GraphNode(string data, LinkedList<Edge> neighbors)
         {
             this._address = data;
             this._neighbors = neighbors;
+            //this._value = new List<decimal>();
         }
 
         public string Address
@@ -36,10 +39,39 @@ namespace GraphDataStructure
             get { return this._address; }
         }
 
-        public LinkedList<GraphNode> Neighbors
+        public LinkedList<Edge> Neighbors
         {
             set { this._neighbors = value; }
             get { return this._neighbors; }
+        }
+
+        public void addNeighbor(GraphNode neighbor, decimal cost)
+        {
+            Edge newEdge = new Edge(neighbor, cost);
+            this._neighbors.AddLast(newEdge);
+        }
+
+        public void removeEdge(GraphNode target)
+        {
+            var index = getGraphNode(target);
+            if(index > -1)
+                this._neighbors.ElementAt(index);
+        }
+        //public List<decimal> Value
+        //{
+        //    get { return this._value; }
+        //}
+
+        public int getGraphNode(GraphNode node)
+        {
+            for (int i = 0; i < this._neighbors.Count(); i++)
+            {
+                if (this._neighbors.ElementAt(i).Target.Address.Equals(node.Address))
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 }
