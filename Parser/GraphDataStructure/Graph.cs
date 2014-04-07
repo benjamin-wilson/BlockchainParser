@@ -43,11 +43,6 @@ namespace GraphDataStructure
             this._nodeSet.AddLast(new GraphNode(node));
         }
 
-        public void addDirectedEdge(GraphNode from, GraphNode to, decimal cost)
-        {
-            from.addNeighbor(to, cost);
-        }
-
         public void addDirectedEdge(string from, string to, decimal cost)
         {
             GraphNode fromNode = new GraphNode(from);
@@ -191,21 +186,20 @@ namespace GraphDataStructure
 
         public static Graph populate(string publicAddress, int degree)
         {
-            int count = 0; //Used For testing
+            Database.DBConnect getLists = new Database.DBConnect();
+            int count = 0;
             
-            Queue<string> nextAddresses = new Queue<string>();
+            Queue<string> currentDegree = new Queue<string>();
+            Queue<string> nextDegree = new Queue<string>();
             GraphDataStructure.Graph graphList = new GraphDataStructure.Graph();
 
             graphList.addGraphNode(publicAddress);
-            nextAddresses.Enqueue(publicAddress);
+            currentDegree.Enqueue(publicAddress);
             _previousAddresses.Add(publicAddress);
 
-            //while (nextAddresses.Count > 0)
-            while (count < degree && nextAddresses.Count != 0) //Used for testing
+            while (count < degree) 
             {
-                Database.DBConnect getLists = new Database.DBConnect();
-                string current = nextAddresses.Dequeue();
-
+                string current = currentDegree.Dequeue();
                 var sendersList = getLists.getSentTo(current);
                 var reciverList = getLists.getRecivedFrom(current);
 
@@ -213,32 +207,32 @@ namespace GraphDataStructure
                 {
                     if(!_previousAddresses.Contains(sender.target))
                     {
-                        nextAddresses.Enqueue(sender.target);
+                        nextDegree.Enqueue(sender.target);
                         _previousAddresses.Add(sender.target);
                         graphList.addGraphNode(sender.target);
                     }
                     
-                    graphList.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value));
-                    // Console.WriteLine(sender.source + "     " + sender.target);
+                    graphList.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(-sender.value));
                 }
 
                 foreach (var reciver in reciverList)
                 {
                     if(!_previousAddresses.Contains(reciver.source))
                     { 
-                        nextAddresses.Enqueue(reciver.source);
+                        nextDegree.Enqueue(reciver.source);
                         _previousAddresses.Add(reciver.source);
                         graphList.addGraphNode(reciver.source);
                         graphList.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value));
                     }
-                    //  Console.WriteLine(reciver.source + "    " + reciver.target);
+
                 }
 
-                //if(count%100 == 0)
+                if (currentDegree.Count <= 0)
                 {
-                    Console.WriteLine("Still Alive: " + count);
+                    count++;
+                    currentDegree = nextDegree;
+                    nextDegree = new Queue<string>();
                 }
-                count++;
             }
 
             return graphList;

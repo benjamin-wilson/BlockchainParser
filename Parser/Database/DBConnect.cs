@@ -24,7 +24,7 @@ namespace Database
             server = "localhost";
             database = "mydb";
             uid = "root";
-            password = "tiny";
+            password = "";
             timeout = "120";
             string connectionString;
             connectionString = "SERVER=" + server + ";" + "DATABASE=" +

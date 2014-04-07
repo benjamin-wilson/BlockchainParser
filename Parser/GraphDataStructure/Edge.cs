@@ -9,12 +9,18 @@ namespace GraphDataStructure
     public class Edge
     {
         private GraphNode _neighbor;
-        private decimal _weight;
+        private uint _weight;
+        private decimal _value;
 
         public Edge(GraphNode target, decimal value)
         {
             this._neighbor = target;
-            this._weight = value;
+            this._value = value;
+        }
+
+        public uint Weight
+        {
+            get { return this._weight; }
         }
 
         public GraphNode Target
@@ -24,7 +30,7 @@ namespace GraphDataStructure
 
         public decimal Weight
         {
-            get { return this._weight; }
+            get { return this._value; }
         }
 
         public bool findEdge(GraphNode nodeToFind)
@@ -35,9 +41,18 @@ namespace GraphDataStructure
             return false;
         }
 
-        public void addWeight(decimal weight)
+        public void addValue(decimal weight)
         {
-            this._weight += weight;
+            this._value += weight;
+        }
+
+        public void addWeight()
+        {
+            this._weight++;
+        }
+        public void removeWeight()
+        {
+            this._weight--;
         }
     }
 }
