@@ -48,7 +48,12 @@ namespace GraphDataStructure
         public void addNeighbor(GraphNode neighbor, decimal cost)
         {
             Edge newEdge = new Edge(neighbor, cost);
-            this._neighbors.AddLast(newEdge);
+            if(duplicate(newEdge))
+            {
+                addDuplicates(newEdge);
+            }
+            else
+                this._neighbors.AddLast(newEdge);
         }
 
         public void removeEdge(GraphNode target)
@@ -57,10 +62,6 @@ namespace GraphDataStructure
             if(index > -1)
                 this._neighbors.ElementAt(index);
         }
-        //public List<decimal> Value
-        //{
-        //    get { return this._value; }
-        //}
 
         public int getGraphNode(GraphNode node)
         {
@@ -72,6 +73,29 @@ namespace GraphDataStructure
                 }
             }
             return -1;
+        }
+
+        public void addDuplicates(Edge duplicateEdge)
+        {
+            foreach (var edge in this._neighbors)
+            {
+                if (edge.Target.Address.Equals(duplicateEdge.Target.Address))
+                {
+                    edge.addWeight(duplicateEdge.Weight);
+                }
+            }
+        }
+
+        public bool duplicate(Edge edgeCheck)
+        {
+            foreach(var edge in this._neighbors)
+            {
+                if(edge.Target.Address.Equals(edgeCheck.Target.Address))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

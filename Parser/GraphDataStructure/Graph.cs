@@ -229,9 +229,8 @@ namespace GraphDataStructure
                         nextAddresses.Enqueue(reciver.source);
                         _previousAddresses.Add(reciver.source);
                         graphList.addGraphNode(reciver.source);
+                        graphList.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value));
                     }
-
-                    graphList.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value));
                     //  Console.WriteLine(reciver.source + "    " + reciver.target);
                 }
 

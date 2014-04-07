@@ -34,5 +34,10 @@ namespace GraphDataStructure
 
             return false;
         }
+
+        public void addWeight(decimal weight)
+        {
+            this._weight += weight;
+        }
     }
 }
