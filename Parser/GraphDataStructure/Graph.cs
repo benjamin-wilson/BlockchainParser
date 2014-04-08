@@ -36,7 +36,7 @@ namespace GraphDataStructure
         public void addNode(string address)
         {
             GraphNode node = new GraphNode(address);
-            if (nodeExists(node))
+            if (!nodeExists(node))
             {
                 this._nodeSet.AddLast(node);
             }
@@ -53,7 +53,12 @@ namespace GraphDataStructure
 
         private bool nodeExists(GraphNode node)
         {
-
+            if (getGraphNode(node) == -1)
+            {
+                return false;
+            }
+            else
+                return true;
         }
 
         public int getGraphNode(GraphNode node)
@@ -115,7 +120,7 @@ namespace GraphDataStructure
 
                     foreach (var neighbor in gnode.Neighbors)
                     {
-                        file.Write(neighbor.Target.Address + ":" + neighbor.Weight +" , ");
+                        file.Write(neighbor.Target.Address + ":" + neighbor.Weight + ":"+ neighbor.Value + " , ");
                         count++;
                     }
 
