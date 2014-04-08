@@ -212,7 +212,7 @@ namespace GraphDataStructure
                         graphList.addGraphNode(sender.target);
                     }
                     
-                    graphList.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(-sender.value));
+                    graphList.addDirectedEdge(sender.source, sender.target, -Convert.ToDecimal(sender.value));
                 }
 
                 foreach (var reciver in reciverList)

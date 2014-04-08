@@ -81,7 +81,7 @@ namespace GraphDataStructure
             {
                 if (edge.Target.Address.Equals(duplicateEdge.Target.Address))
                 {
-                    edge.addValue(duplicateEdge.Weight);
+                    edge.addWeight();
                 }
             }
         }

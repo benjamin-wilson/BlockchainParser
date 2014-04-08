@@ -10,6 +10,6 @@ namespace Database
     {
             public string source;
             public string target;
-            public long value;
+            public ulong value;
     }
 }

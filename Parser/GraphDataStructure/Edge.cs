@@ -16,6 +16,7 @@ namespace GraphDataStructure
         {
             this._neighbor = target;
             this._value = value;
+            _weight = 1;
         }
 
         public uint Weight
@@ -28,7 +29,7 @@ namespace GraphDataStructure
             get { return this._neighbor; }
         }
 
-        public decimal Weight
+        public decimal Value 
         {
             get { return this._value; }
         }
@@ -41,9 +42,9 @@ namespace GraphDataStructure
             return false;
         }
 
-        public void addValue(decimal weight)
+        public void addValue(decimal value)
         {
-            this._value += weight;
+            this._value += value;
         }
 
         public void addWeight()
