@@ -24,8 +24,8 @@ namespace Database
             server = "localhost";
             database = "mydb";
             uid = "root";
-            password = "tiny";
-            timeout = "120";
+            password = "";
+            timeout = "1";
             string connectionString;
             connectionString = "SERVER=" + server + ";" + "DATABASE=" +
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";" + "Connect Timeout="+timeout;
@@ -329,26 +329,33 @@ namespace Database
                     MySqlCommand cmd = new MySqlCommand(query.ToString(), connection);
                     cmd.CommandTimeout = 120;
                     //Create a data reader and Execute the command
-                    MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                    //Read the data and store them in the list
-                    while (dataReader.Read())
+                    try
                     {
-                        JSON json = new JSON();
-                        json.source = (string)dataReader["source"];
-                        json.target = (string)dataReader["target"];
-                        json.value = (ulong)dataReader["value"];
-                        jsonList.Add(json);
+                        MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                        //Read the data and store them in the list
+                        while (dataReader.Read())
+                        {
+                            JSON json = new JSON();
+                            json.source = (string)dataReader["source"];
+                            json.target = (string)dataReader["target"];
+                            json.value = (ulong)dataReader["value"];
+                            jsonList.Add(json);
+                        }
+
+                        //close Data Reader
+                        dataReader.Close();
+
+                        //close Connection
+                        this.CloseConnection();
+
+                        //return list to be displayed
+                        return jsonList;
+                    }catch(MySqlException e)
+                    {
+                        Console.WriteLine(e);
+                        return null;
                     }
-
-                    //close Data Reader
-                    dataReader.Close();
-
-                    //close Connection
-                    this.CloseConnection();
-
-                    //return list to be displayed
-                    return jsonList;
                 }
                 else
                 {
@@ -376,8 +383,11 @@ namespace Database
                 MySqlCommand cmd = new MySqlCommand(query.ToString(), connection);
                 cmd.CommandTimeout = 120;
                 //Create a data reader and Execute the command
-                MySqlDataReader dataReader = cmd.ExecuteReader();
+                try
+                {
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
 
+                    
                 //Read the data and store them in the list
                 while (dataReader.Read())
                 {
@@ -396,6 +406,12 @@ namespace Database
 
                 //return list to be displayed
                 return jsonList;
+                }
+                catch (MySqlException e)
+                {
+                    Console.WriteLine(e);
+                    return null;
+                }
             }
             else
             {

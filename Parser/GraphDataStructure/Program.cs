@@ -11,12 +11,14 @@ namespace GraphDataStructure
     {
         static void Main(string[] args)
         {
+            int degrees = 3;
             //Used for testing
-            var temp = GraphDataStructure.Graph.populate("16MEiyzg9qaB1RWBhmcYd8bicVcEiTQJrE", 1);
+            Graph temp = Graph.populate("16MEiyzg9qaB1RWBhmcYd8bicVcEiTQJrE", degrees);
 
-            temp.writeListToFile(@"C:\Windows v2\BeforePruning.txt");
+            //temp.writeListToFile(@"C:\Windows v2\BeforePruning.txt");
 
-            //temp.removeEndNodes();
+            //temp.pathTrim(degrees+1);
+            temp.quickTrim();
             temp.writeListToFile(@"C:\Windows v2\AfterPruning.txt");
         }
     }

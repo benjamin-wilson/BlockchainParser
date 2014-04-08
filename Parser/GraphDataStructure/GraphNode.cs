@@ -6,27 +6,27 @@ using System.Threading.Tasks;
 
 namespace GraphDataStructure
 {
-    public class GraphNode
+    public class Node
     {
         private string _address;
         private LinkedList<Edge> _neighbors;
          // This is used to create a weighted graph
 
-        public GraphNode()
+        public Node()
         {
             this._address = null;
             this._neighbors = new LinkedList<Edge>();
             //this._value = new List<decimal>();
         }
 
-        public GraphNode(string data)
+        public Node(string data)
         {
             this._address = data;
             this._neighbors = new LinkedList<Edge>();
             //this._value = new List<decimal>();
         }
 
-        public GraphNode(string data, LinkedList<Edge> neighbors)
+        public Node(string data, LinkedList<Edge> neighbors)
         {
             this._address = data;
             this._neighbors = neighbors;
@@ -45,7 +45,7 @@ namespace GraphDataStructure
             get { return this._neighbors; }
         }
 
-        public void addNeighbor(GraphNode neighbor, decimal cost)
+        public void addNeighbor(Node neighbor, decimal cost)
         {
             Edge newEdge = new Edge(neighbor, cost);
             if(duplicate(newEdge))
@@ -56,14 +56,14 @@ namespace GraphDataStructure
                 this._neighbors.AddLast(newEdge);
         }
 
-        public void removeEdge(GraphNode target)
+        public void removeEdge(Node target)
         {
             var index = getGraphNode(target);
             if(index > -1)
                 this._neighbors.ElementAt(index);
         }
 
-        public int getGraphNode(GraphNode node)
+        public int getGraphNode(Node node)
         {
             for (int i = 0; i < this._neighbors.Count(); i++)
             {

@@ -8,11 +8,11 @@ namespace GraphDataStructure
 {
     public class Edge
     {
-        private GraphNode _neighbor;
+        private Node _neighbor;
         private uint _weight;
         private decimal _value;
 
-        public Edge(GraphNode target, decimal value)
+        public Edge(Node target, decimal value)
         {
             this._neighbor = target;
             this._value = value;
@@ -24,7 +24,7 @@ namespace GraphDataStructure
             get { return this._weight; }
         }
 
-        public GraphNode Target
+        public Node Target
         {
             get { return this._neighbor; }
         }
@@ -34,7 +34,7 @@ namespace GraphDataStructure
             get { return this._value; }
         }
 
-        public bool findEdge(GraphNode nodeToFind)
+        public bool findEdge(Node nodeToFind)
         {
             if (nodeToFind.Address.Equals(this._neighbor.Address))
                 return true;

@@ -10,14 +10,14 @@ namespace UnitTests
         [TestMethod]
         public void Constructor_1()
         {
-            GraphDataStructure.GraphNode test = new GraphDataStructure.GraphNode();
+            GraphDataStructure.Node test = new GraphDataStructure.Node();
 
             Assert.IsNotNull(test);
         }
         [TestMethod]
         public void Constructor_2()
         {
-            GraphDataStructure.GraphNode test = new GraphDataStructure.GraphNode("Test");
+            GraphDataStructure.Node test = new GraphDataStructure.Node("Test");
 
             Assert.IsTrue(test.Address.Equals("Test"));
         }
@@ -25,7 +25,7 @@ namespace UnitTests
         [TestMethod]
         public void Get_Address()
         {
-            GraphDataStructure.GraphNode test = new GraphNode("addressTest");
+            GraphDataStructure.Node test = new Node("addressTest");
 
             Assert.IsTrue(test.Address.Equals("addressTest"));
         }
@@ -33,7 +33,7 @@ namespace UnitTests
         [TestMethod]
         public void Set_Address()
         {
-            GraphDataStructure.GraphNode test = new GraphNode();
+            GraphDataStructure.Node test = new Node();
 
             test.Address = "addressTest";
             Assert.IsTrue(test.Address.Equals("addressTest"));
