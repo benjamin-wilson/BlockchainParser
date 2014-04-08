@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Database;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,12 +11,10 @@ namespace GraphDataStructure
     public class Graph
     {
         private LinkedList<GraphNode> _nodeSet;
-        private static List<string> _previousAddresses; //Addresses that have already been search, will be used to skip them in the future
 
         public Graph()
         {
             this._nodeSet = new LinkedList<GraphNode>();
-            _previousAddresses = new List<string>();
         }
         public Graph(LinkedList<GraphNode> set)
         {
@@ -33,14 +32,15 @@ namespace GraphDataStructure
         {
             get {return this._nodeSet;}
         }
-        public void addGraphNode(GraphNode node)
-        {
-            this._nodeSet.AddLast(node);
-        }
 
-        public void addGraphNode(string node)
+        public void addNode(string address)
         {
-            this._nodeSet.AddLast(new GraphNode(node));
+            GraphNode node = new GraphNode(address);
+            if (nodeExists(node))
+            {
+                this._nodeSet.AddLast(node);
+            }
+
         }
 
         public void addDirectedEdge(string from, string to, decimal cost)
@@ -49,6 +49,11 @@ namespace GraphDataStructure
             GraphNode toNode = new GraphNode(to);
 
             this._nodeSet.ElementAt(getGraphNode(fromNode)).addNeighbor(this._nodeSet.ElementAt(getGraphNode(toNode)), cost);
+        }
+
+        private bool nodeExists(GraphNode node)
+        {
+
         }
 
         public int getGraphNode(GraphNode node)
@@ -82,33 +87,6 @@ namespace GraphDataStructure
                     item.removeEdge(nodeToRemove);
                 }
             }
-        }
-
-        public void removeEndNodes()
-        {
-            var endNodes = findEndNodes();
-
-            foreach(var node in endNodes)
-            {
-                removeNode(node);
-            }
-        }
-
-        public List<GraphNode> findEndNodes()
-        {
-            var nodesToRemoveList = new List<GraphNode>();
-
-            for (int i = 0; i < this._nodeSet.Count; i++ )
-            {
-                var node = this._nodeSet.ElementAt(i);
-
-                if (node.Neighbors.Count < 2 || node == null)
-                {
-                    nodesToRemoveList.Add(node);
-                }
-            }
-
-            return nodesToRemoveList;
         }
 
         public void displayList()
@@ -186,45 +164,36 @@ namespace GraphDataStructure
 
         public static Graph populate(string publicAddress, int degree)
         {
-            Database.DBConnect getLists = new Database.DBConnect();
+            DBConnect database = new DBConnect();
+            Graph graph = new Graph();
             int count = 0;
             
             Queue<string> currentDegree = new Queue<string>();
             Queue<string> nextDegree = new Queue<string>();
-            GraphDataStructure.Graph graphList = new GraphDataStructure.Graph();
 
-            graphList.addGraphNode(publicAddress);
+
+            graph.addNode(publicAddress);
             currentDegree.Enqueue(publicAddress);
-            _previousAddresses.Add(publicAddress);
 
             while (count < degree) 
             {
-                string current = currentDegree.Dequeue();
-                var sendersList = getLists.getSentTo(current);
-                var reciverList = getLists.getRecivedFrom(current);
+                string currentAddress = currentDegree.Dequeue();
+
+                var sendersList = database.getSentTo(currentAddress);
+                var reciverList = database.getRecivedFrom(currentAddress);
 
                 foreach (var sender in sendersList)
                 {
-                    if(!_previousAddresses.Contains(sender.target))
-                    {
-                        nextDegree.Enqueue(sender.target);
-                        _previousAddresses.Add(sender.target);
-                        graphList.addGraphNode(sender.target);
-                    }
-                    
-                    graphList.addDirectedEdge(sender.source, sender.target, -Convert.ToDecimal(sender.value));
+                    nextDegree.Enqueue(sender.target);
+                    graph.addNode(sender.target);
+                    graph.addDirectedEdge(sender.source, sender.target, -Convert.ToDecimal(sender.value));
                 }
 
                 foreach (var reciver in reciverList)
                 {
-                    if(!_previousAddresses.Contains(reciver.source))
-                    { 
-                        nextDegree.Enqueue(reciver.source);
-                        _previousAddresses.Add(reciver.source);
-                        graphList.addGraphNode(reciver.source);
-                        graphList.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value));
-                    }
-
+                    nextDegree.Enqueue(reciver.source);
+                    graph.addNode(reciver.source);
+                    graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value));
                 }
 
                 if (currentDegree.Count <= 0)
@@ -235,7 +204,7 @@ namespace GraphDataStructure
                 }
             }
 
-            return graphList;
+            return graph;
         }
     }
 }

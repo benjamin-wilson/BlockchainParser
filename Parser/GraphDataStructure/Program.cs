@@ -16,7 +16,7 @@ namespace GraphDataStructure
 
             temp.writeListToFile(@"C:\Windows v2\BeforePruning.txt");
 
-            temp.removeEndNodes();
+            //temp.removeEndNodes();
             temp.writeListToFile(@"C:\Windows v2\AfterPruning.txt");
         }
     }
