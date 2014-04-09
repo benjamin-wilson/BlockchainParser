@@ -7,18 +7,18 @@ using Blockchain;
 
 namespace Database
 {
-    public static class MySQLBlockHelper
+    public static class BlockchainHelper
     {
         public static void pushToMySQL(Block block, DBConnect mysql)
         {
-            List<MySQLInput> mysqlInputList = new List<MySQLInput>();
-            List<MySQLOutput> mysqlOutputList = new List<MySQLOutput>();
+            List<Simplifiednput> mysqlInputList = new List<Simplifiednput>();
+            List<SimplifiedOutput> mysqlOutputList = new List<SimplifiedOutput>();
             
-            foreach(Transaction transaction in block.transactions)
+            foreach(BlockchainTransaction transaction in block.transactions)
             {
                 foreach(Input input in transaction.inputs)
                 {
-                    MySQLInput mysqlInput = new MySQLInput();
+                    Simplifiednput mysqlInput = new Simplifiednput();
                     mysqlInput.transactionHash = truncateTransactionHashSixteen(BitConverter.ToString(transaction.thisTransactionHash).Replace("-", string.Empty));
                     mysqlInput.previousTransactionHash = truncateTransactionHashSixteen(BitConverter.ToString(input.previousTransactionHash).Replace("-", string.Empty));
                     mysqlInput.previousTransactionOutputIndex = input.previousTransactionIndex;
@@ -27,7 +27,7 @@ namespace Database
                 uint outputIndexCounter = 0;
                 foreach(Output output in transaction.outputs)
                 {
-                    MySQLOutput mysqlOutput = new MySQLOutput();
+                    SimplifiedOutput mysqlOutput = new SimplifiedOutput();
                     mysqlOutput.value = output.value;
                     mysqlOutput.publicAddress = output.publicKeyAddress;
                     mysqlOutput.index = outputIndexCounter;

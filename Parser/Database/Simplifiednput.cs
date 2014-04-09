@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Database
 {
-    public class MySQLInput
+    public class Simplifiednput
     {
         public string transactionHash;
         public string previousTransactionHash;

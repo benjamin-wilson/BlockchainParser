@@ -43,10 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DBConnect.cs" />
-    <Compile Include="JSON.cs" />
-    <Compile Include="MySQLBlockHelper.cs" />
-    <Compile Include="MySQLInput.cs" />
-    <Compile Include="MySQLOutput.cs" />
+    <Compile Include="Transaction.cs" />
+    <Compile Include="BlockchainHelper.cs" />
+    <Compile Include="Simplifiednput.cs" />
+    <Compile Include="SimplifiedOutput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

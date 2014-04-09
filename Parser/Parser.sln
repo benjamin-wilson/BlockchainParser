@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Databa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blockchain", "Blockchain\Blockchain.csproj", "{18B9AF55-A9A2-4867-A917-56EF913D41C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphDataStructure", "GraphDataStructure\GraphDataStructure.csproj", "{DCA5B6D5-4AB9-4296-8177-67150292A466}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Graph", "GraphDataStructure\Graph.csproj", "{DCA5B6D5-4AB9-4296-8177-67150292A466}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{B2DAA82D-5357-41AA-BFEB-C50DC3835E2C}"
 EndProject

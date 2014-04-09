@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Database
 {
-    public class MySQLOutput
+    public class SimplifiedOutput
     {
         public ulong value;
         public string publicAddress;

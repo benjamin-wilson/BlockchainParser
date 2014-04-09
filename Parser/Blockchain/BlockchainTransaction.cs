@@ -6,9 +6,9 @@ using System.Text;
 
 namespace Blockchain
 {
-    public class Transaction
+    public class BlockchainTransaction
     {
-        public Transaction()
+        public BlockchainTransaction()
         {
             inputs = new List<Input>();
             outputs = new List<Output>();

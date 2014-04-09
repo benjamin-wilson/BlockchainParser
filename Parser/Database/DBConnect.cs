@@ -72,12 +72,12 @@ namespace Database
                 return false;
             }
         }
-        public void InsertOutputs(List<MySQLOutput> outputs)
+        public void InsertOutputs(List<SimplifiedOutput> outputs)
         {
             StringBuilder query = new StringBuilder();
             query.Append("INSERT INTO output (value, publicAddress, outputIndex, transactionHash, timestamp) VALUES");
             bool isFirstElement = true;
-            foreach(MySQLOutput output in outputs)
+            foreach(SimplifiedOutput output in outputs)
             {
                 if(!isFirstElement)
                 {
@@ -117,12 +117,12 @@ namespace Database
                 this.CloseConnection();
             }
         }
-        public void InsertInputs(List<MySQLInput> inputs)
+        public void InsertInputs(List<Simplifiednput> inputs)
         {
             StringBuilder query = new StringBuilder();
             query.Append("INSERT INTO input (transactionHash, previousTransactionHash, previousTransactionOutputIndex) VALUES");
             bool isFirstElement = true;
-            foreach (MySQLInput input in inputs)
+            foreach (Simplifiednput input in inputs)
             {
                 if (!isFirstElement)
                 {
@@ -152,167 +152,9 @@ namespace Database
                 this.CloseConnection();
             }
         }
-        public List<MySQLOutput> SelectOutputsBasedOnAddress(string address)
+        public List<Transaction> getRecivedFrom(string address)
         {
-            string query = "SELECT * FROM mydb.output where publicAddress = '"+address+"'";
-            List<MySQLOutput> outputs = new List<MySQLOutput>();
-
-            if (this.OpenConnection() == true)
-            {
-                //Create Command
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.CommandTimeout = 120;
-                //Create a data reader and Execute the command
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                //Read the data and store them in the list
-                while (dataReader.Read())
-                {
-                    MySQLOutput output = new MySQLOutput();
-                    
-                    output.value = (ulong)dataReader["value"];
-                    output.publicAddress = (string)dataReader["publicAddress"];
-                    output.index = (uint)dataReader["outputIndex"];
-                    output.transactionHash = (string)dataReader["transactionHash"];
-                    output.timestamp = (uint)dataReader["timestamp"];
-                    outputs.Add(output);
-                }
-
-                //close Data Reader
-                dataReader.Close();
-
-                //close Connection
-                this.CloseConnection();
-
-                //return list to be displayed
-                return outputs;
-            }
-            else
-            {
-                return outputs;
-            }
-        }
-        public List<MySQLInput> SelectInputsBasedOnTransactionHash(string hash)
-        {
-            string query = "SELECT * FROM mydb.input where transactionHash = '" + hash + "'";
-            List<MySQLInput> inputs = new List<MySQLInput>();
-
-            if (this.OpenConnection() == true)
-            {
-                //Create Command
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.CommandTimeout = 120;
-                //Create a data reader and Execute the command
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                //Read the data and store them in the list
-                while (dataReader.Read())
-                {
-                    MySQLInput input = new MySQLInput();
-
-                    input.transactionHash = (string)dataReader["transactionHash"];
-                    input.previousTransactionHash = (string)dataReader["previousTransactionHash"];
-                    input.previousTransactionOutputIndex = (uint)dataReader["previousTransactionOutputIndex"];
-                    inputs.Add(input);
-                }
-
-                //close Data Reader
-                dataReader.Close();
-
-                //close Connection
-                this.CloseConnection();
-
-                //return list to be displayed
-                return inputs;
-            }
-            else
-            {
-                return inputs;
-            }
-        }
-
-        public List<MySQLInput> SelectInputsBasedOnPreviousTransactionHashAndPreviousIndex(string hash, uint index)
-        {
-            string query = "SELECT * FROM mydb.input where previousTransactionHash = '" + hash + "'"+" and previousTransactionOutputIndex = "+index.ToString();
-            List<MySQLInput> inputs = new List<MySQLInput>();
-
-            if (this.OpenConnection() == true)
-            {
-                //Create Command
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.CommandTimeout = 120;
-                //Create a data reader and Execute the command
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                //Read the data and store them in the list
-                while (dataReader.Read())
-                {
-                    MySQLInput input = new MySQLInput();
-
-                    input.transactionHash = (string)dataReader["transactionHash"];
-                    input.previousTransactionHash = (string)dataReader["previousTransactionHash"];
-                    input.previousTransactionOutputIndex = (uint)dataReader["previousTransactionOutputIndex"];
-                    inputs.Add(input);
-                }
-
-                //close Data Reader
-                dataReader.Close();
-
-                //close Connection
-                this.CloseConnection();
-
-                //return list to be displayed
-                return inputs;
-            }
-            else
-            {
-                return inputs;
-            }
-        }
-        public List<MySQLOutput> SelectOutputsBasedOnTransactionHashAndIndex(string hash, uint index)
-        {
-            string query = "SELECT * FROM mydb.output where transactionHash = '" + hash + "'"+" and outputIndex = "+index.ToString();
-            List<MySQLOutput> outputs = new List<MySQLOutput>();
-
-            if (this.OpenConnection() == true)
-            {
-                //Create Command
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.CommandTimeout = 120;
-                //Create a data reader and Execute the command
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                //Read the data and store them in the list
-                while (dataReader.Read())
-                {
-                    MySQLOutput output = new MySQLOutput();
-
-                    output.value = (ulong)dataReader["value"];
-                    output.publicAddress = (string)dataReader["publicAddress"];
-                    output.index = (uint)dataReader["outputIndex"];
-                    output.transactionHash = (string)dataReader["transactionHash"];
-                    output.timestamp = (uint)dataReader["timestamp"];
-                    outputs.Add(output);
-                }
-
-                //close Data Reader
-                dataReader.Close();
-
-                //close Connection
-                this.CloseConnection();
-
-                //return list to be displayed
-                return outputs;
-            }
-            else
-            {
-                return outputs;
-            }
-        }
-
-        public List<JSON> getRecivedFrom(string address)
-        {
-            List<JSON> jsonList = new List<JSON>();
+            List<Transaction> jsonList = new List<Transaction>();
             StringBuilder query = new StringBuilder();
             query.Append("Select output.publicAddress as source,totals.value,totals.publicAddress as target ");
                 query.Append("from output,( SELECT previousTransactionHash, value, previousTransactionOutputIndex,publicAddress ");
@@ -336,9 +178,9 @@ namespace Database
                         //Read the data and store them in the list
                         while (dataReader.Read())
                         {
-                            JSON json = new JSON();
+                            Transaction json = new Transaction();
                             json.source = (string)dataReader["source"];
-                            json.target = (string)dataReader["target"];
+                            json.target = address;
                             json.value = (ulong)dataReader["value"];
                             jsonList.Add(json);
                         }
@@ -362,13 +204,12 @@ namespace Database
                     return jsonList;
                 }
         }
-
-        public List<JSON> getSentTo(string address)
+        public List<Transaction> getSentTo(string address)
         {
-            List<JSON> jsonList = new List<JSON>();
+            List<Transaction> jsonList = new List<Transaction>();
             StringBuilder query = new StringBuilder();
 
-            query.Append("select totals.publicAddress as source,output.publicAddress as target,totals.value ");
+            query.Append("select output.publicAddress as target,totals.value ");
             query.Append("from output,(SELECT input.transactionHash,output.value,output.publicAddress ");
             query.Append("from input ");
             query.Append("join output on input.previousTransactionHash = output.transactionHash and input.previousTransactionOutputIndex = output.outputIndex ");
@@ -391,8 +232,8 @@ namespace Database
                 //Read the data and store them in the list
                 while (dataReader.Read())
                 {
-                    JSON json = new JSON();
-                    json.source = (string)dataReader["source"];
+                    Transaction json = new Transaction();
+                    json.source = address;
                     json.target = (string)dataReader["target"];
                     json.value = (ulong)dataReader["value"];
                     jsonList.Add(json);
@@ -416,47 +257,6 @@ namespace Database
             else
             {
                 return jsonList;
-            }
-        }
-
-        public IEnumerable<MySQLOutput> SelectOutputsBasedOnTransactionHash(string hash)
-        {
-            string query = "SELECT * FROM mydb.output where transactionHash = '" + hash + "'";
-            List<MySQLOutput> outputs = new List<MySQLOutput>();
-
-            if (this.OpenConnection() == true)
-            {
-                //Create Command
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.CommandTimeout = 120;
-                //Create a data reader and Execute the command
-                MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                //Read the data and store them in the list
-                while (dataReader.Read())
-                {
-                    MySQLOutput output = new MySQLOutput();
-
-                    output.value = (ulong)dataReader["value"];
-                    output.publicAddress = (string)dataReader["publicAddress"];
-                    output.index = (uint)dataReader["outputIndex"];
-                    output.transactionHash = (string)dataReader["transactionHash"];
-                    output.timestamp = (uint)dataReader["timestamp"];
-                    outputs.Add(output);
-                }
-
-                //close Data Reader
-                dataReader.Close();
-
-                //close Connection
-                this.CloseConnection();
-
-                //return list to be displayed
-                return outputs;
-            }
-            else
-            {
-                return outputs;
             }
         }
     }

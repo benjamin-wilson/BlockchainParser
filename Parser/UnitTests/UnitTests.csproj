@@ -55,9 +55,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GraphDataStructure\GraphDataStructure.csproj">
+    <ProjectReference Include="..\GraphDataStructure\Graph.csproj">
       <Project>{dca5b6d5-4ab9-4296-8177-67150292a466}</Project>
-      <Name>GraphDataStructure</Name>
+      <Name>Graph</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

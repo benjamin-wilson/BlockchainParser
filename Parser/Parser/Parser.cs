@@ -107,7 +107,7 @@ namespace Parser
                 }
                 
                 Block completedBlock = parseBlockDataIntoClass(blockData);
-                MySQLBlockHelper.pushToMySQL(completedBlock, mysql);
+                BlockchainHelper.pushToMySQL(completedBlock, mysql);
             }
         }
 
@@ -127,7 +127,7 @@ namespace Parser
 
             for (ulong i = 0; i < block.VL_transactionCount; i++)
             {
-                Transaction transaction = new Transaction();
+                BlockchainTransaction transaction = new BlockchainTransaction();
                 uint transactionCursor = cursor;
                 transaction.transactionVersionNumber = parseFourBytesToElement(ref cursor, ref blockByteArray);
                 transaction.VL_inputCount = parseVaribleLengthInteger(ref cursor, ref blockByteArray);

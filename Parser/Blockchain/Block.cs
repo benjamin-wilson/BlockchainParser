@@ -10,7 +10,7 @@ namespace Blockchain
     {
         public Block()
         {
-            transactions = new List<Transaction>();
+            transactions = new List<BlockchainTransaction>();
         }
         public uint versionNumber;
         public byte[] previousBlockHash;
@@ -19,6 +19,6 @@ namespace Blockchain
         public uint targetDifficulty;
         public uint nonce;
         public ulong VL_transactionCount;
-        public List<Transaction> transactions;
+        public List<BlockchainTransaction> transactions;
     }
 }

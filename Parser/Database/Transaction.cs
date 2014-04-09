@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Database
 {
-    public class JSON
+    public class Transaction
     {
             public string source;
             public string target;
