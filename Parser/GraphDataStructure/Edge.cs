@@ -12,16 +12,17 @@ namespace GraphDataStructure
         private uint _weight;
         private decimal _value;
 
-        public Edge(Node target, decimal value)
+        public Edge(Node target, decimal value, uint weight)
         {
             this._neighbor = target;
             this._value = value;
-            _weight = 1;
+            this._weight = weight;
         }
 
         public uint Weight
         {
             get { return this._weight; }
+            set { this._weight = value; }
         }
 
         public Node Target
@@ -45,15 +46,6 @@ namespace GraphDataStructure
         public void addValue(decimal value)
         {
             this._value += value;
-        }
-
-        public void addWeight()
-        {
-            this._weight++;
-        }
-        public void removeWeight()
-        {
-            this._weight--;
         }
     }
 }

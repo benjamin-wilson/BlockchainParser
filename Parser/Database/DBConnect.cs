@@ -156,14 +156,13 @@ namespace Database
         {
             List<Transaction> jsonList = new List<Transaction>();
             StringBuilder query = new StringBuilder();
-            query.Append("Select output.publicAddress as source,totals.value,totals.publicAddress as target ");
-                query.Append("from output,( SELECT previousTransactionHash, value, previousTransactionOutputIndex,publicAddress ");
-                query.Append("from input ");
+            query.Append("Select output.publicAddress as source, SUM(totals.value) as value, COUNT(output.publicAddress) AS weight ");
+            query.Append("from output,( SELECT previousTransactionHash, value, previousTransactionOutputIndex from input ");
                 query.Append("join output on input.transactionHash = output.transactionHash ");
                 query.Append("where publicAddress = '");
                 query.Append(address);
                 query.Append("') AS totals ");
-                query.Append("where totals.previousTransactionHash = output.transactionHash and totals.previousTransactionOutputIndex = output.outputIndex;");
+                query.Append("where totals.previousTransactionHash = output.transactionHash and totals.previousTransactionOutputIndex = output.outputIndex group by output.publicAddress;");
 
                 if (this.OpenConnection() == true)
                 {
@@ -178,11 +177,12 @@ namespace Database
                         //Read the data and store them in the list
                         while (dataReader.Read())
                         {
-                            Transaction json = new Transaction();
-                            json.source = (string)dataReader["source"];
-                            json.target = address;
-                            json.value = (ulong)dataReader["value"];
-                            jsonList.Add(json);
+                            Transaction transaction = new Transaction();
+                            transaction.source = (string)dataReader["source"];
+                            transaction.target = address;
+                            transaction.value = Convert.ToUInt64(dataReader["value"]);
+                            transaction.weight = Convert.ToUInt16(dataReader["weight"]);
+                            jsonList.Add(transaction);
                         }
 
                         //close Data Reader
@@ -209,14 +209,14 @@ namespace Database
             List<Transaction> jsonList = new List<Transaction>();
             StringBuilder query = new StringBuilder();
 
-            query.Append("select output.publicAddress as target,totals.value ");
-            query.Append("from output,(SELECT input.transactionHash,output.value,output.publicAddress ");
+            query.Append("select output.publicAddress as target, SUM(totals.value) as value, COUNT(output.publicAddress) AS weight from output,");
+            query.Append("(SELECT input.transactionHash,output.value ");
             query.Append("from input ");
             query.Append("join output on input.previousTransactionHash = output.transactionHash and input.previousTransactionOutputIndex = output.outputIndex ");
             query.Append("where publicAddress = '");
             query.Append(address);
             query.Append("') AS totals ");
-            query.Append("where totals.transactionHash = output.transactionHash;");
+            query.Append("where totals.transactionHash = output.transactionHash group by output.publicAddress;");
 
             if (this.OpenConnection() == true)
             {
@@ -232,11 +232,12 @@ namespace Database
                 //Read the data and store them in the list
                 while (dataReader.Read())
                 {
-                    Transaction json = new Transaction();
-                    json.source = address;
-                    json.target = (string)dataReader["target"];
-                    json.value = (ulong)dataReader["value"];
-                    jsonList.Add(json);
+                    Transaction transaction = new Transaction();
+                    transaction.source = address;
+                    transaction.target = (string)dataReader["target"];
+                    transaction.value = Convert.ToUInt64(dataReader["value"]);
+                    transaction.weight = Convert.ToUInt16(dataReader["weight"]);
+                    jsonList.Add(transaction);
                 }
 
                 //close Data Reader
