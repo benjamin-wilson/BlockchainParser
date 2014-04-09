@@ -158,7 +158,7 @@ namespace Database
             StringBuilder query = new StringBuilder();
             query.Append("Select output.publicAddress as source, SUM(totals.value) as value, COUNT(output.publicAddress) AS weight ");
             query.Append("from output,( SELECT previousTransactionHash, value, previousTransactionOutputIndex from input ");
-                query.Append("join output on input.transactionHash = output.transactionHash ");
+                query.Append("left outer join output on input.transactionHash = output.transactionHash ");
                 query.Append("where publicAddress = '");
                 query.Append(address);
                 query.Append("') AS totals ");
@@ -212,7 +212,7 @@ namespace Database
             query.Append("select output.publicAddress as target, SUM(totals.value) as value, COUNT(output.publicAddress) AS weight from output,");
             query.Append("(SELECT input.transactionHash,output.value ");
             query.Append("from input ");
-            query.Append("join output on input.previousTransactionHash = output.transactionHash and input.previousTransactionOutputIndex = output.outputIndex ");
+            query.Append("left outer join output on input.previousTransactionHash = output.transactionHash and input.previousTransactionOutputIndex = output.outputIndex ");
             query.Append("where publicAddress = '");
             query.Append(address);
             query.Append("') AS totals ");

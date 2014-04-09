@@ -11,10 +11,11 @@ namespace GraphDataStructure
     public class Graph
     {
         private List<Node> _nodeList;
-
+        private Dictionary<string, int> _index;
         public Graph()
         {
             this._nodeList = new List<Node>();
+            this._index = new Dictionary<string, int>();
         }
 
         public List<Node> NodeSet
@@ -26,7 +27,7 @@ namespace GraphDataStructure
         {
             Node node = new Node(address);
             this._nodeList.Add(node);
-
+            this._index.Add(address, this._nodeList.Count-1);
         }
 
         public void addDirectedEdge(string from, string to, decimal value, uint weight)
@@ -36,30 +37,7 @@ namespace GraphDataStructure
 
         public int getNode(string nodeAddress)
         {
-            for (int i = 0; i < this._nodeList.Count(); i++)
-            {
-                if (this._nodeList.ElementAt(i).Address.Equals(nodeAddress))
-                {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        public void removeNode(string address)
-        {
-            int index = getNode(address);
-            var nodeToRemove = this._nodeList.ElementAt(index);
-
-            if (nodeToRemove != null)
-            {
-                this._nodeList.Remove(nodeToRemove);
-
-                foreach (var item in this._nodeList)
-                {
-                    item.removeEdge(nodeToRemove);
-                }
-            }
+            return this._index[nodeAddress];
         }
 
         public void displayList()
@@ -152,38 +130,43 @@ namespace GraphDataStructure
             while (count < degree)
             {
                 string currentAddress = currentDegree.Dequeue();
+                Console.WriteLine("Network has " + graph._nodeList.Count.ToString() + " nodes");
                 Console.Write(currentAddress.ToString() + " Deg: " + count.ToString() + " Qrying ");
-                List<Transaction> sendersList = database.getSentTo(currentAddress);
-                List<Transaction> reciverList = database.getRecivedFrom(currentAddress);
-                Console.WriteLine(" Proc " + (sendersList.Count+reciverList.Count).ToString()+" trans");
-                foreach (Transaction sender in sendersList)
+                if (currentAddress.Substring(0, 5) != "1dice")
                 {
-                    if (!graph.addressExits(sender.target))
+                    List<Transaction> sendersList = database.getSentTo(currentAddress);
+                    List<Transaction> reciverList = database.getRecivedFrom(currentAddress);
+
+                    Console.WriteLine(" Proc " + (sendersList.Count + reciverList.Count).ToString() + " trans");
+                    foreach (Transaction sender in sendersList)
                     {
-                        nextDegree.Enqueue(sender.target);
-                        graph.addNode(sender.target);
-                        graph.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value), sender.weight);
+                        if (!graph._index.ContainsKey(sender.target))
+                        {
+                            nextDegree.Enqueue(sender.target);
+                            graph.addNode(sender.target);
+                            graph.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value), sender.weight);
+                        }
+                        else
+                        {
+                            graph.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value), sender.weight);
+                        }
                     }
-                    else
+
+                    foreach (Transaction reciver in reciverList)
                     {
-                        graph.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value), sender.weight);
+                        if (!graph._index.ContainsKey(reciver.source))
+                        {
+                            nextDegree.Enqueue(reciver.source);
+                            graph.addNode(reciver.source);
+                            graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value), reciver.weight);
+                        }
+                        else
+                        {
+                            graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value), reciver.weight);
+                        }
                     }
                 }
-
-                foreach (Transaction reciver in reciverList)
-                {
-                    if (!graph.addressExits(reciver.source))
-                    {
-                        nextDegree.Enqueue(reciver.source);
-                        graph.addNode(reciver.source);
-                        graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value), reciver.weight);
-                    }
-                    else
-                    {
-                        graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value), reciver.weight);
-                    }
-                }
-
+                Console.WriteLine(currentDegree.Count);
                 if (currentDegree.Count <= 0)
                 {
                     count++;
@@ -205,9 +188,10 @@ namespace GraphDataStructure
                     nodesToRemove.Add(node);
                 }
             }
+            this._index = null; //index is obsolete after nodes are removed from list
             foreach (Node node in nodesToRemove)
             {
-                removeNode(node.Address);
+                this._nodeList.Remove(node);
             }
         }
 
@@ -221,9 +205,10 @@ namespace GraphDataStructure
                     nodesToRemove.Add(node);
                 }
             }
+            this._index = null; //index is obsolete after nodes are removed from list
             foreach(Node node in nodesToRemove)
             {
-                removeNode(node.Address);
+                this._nodeList.Remove(node);
             }
         }
 
@@ -250,18 +235,6 @@ namespace GraphDataStructure
                             return pathFind(node, neighbors, currentDepth);
                         }
                     }
-                }
-            }
-            return false;
-        }
-
-        public bool addressExits(string address)
-        {
-            foreach(Node node in this._nodeList)
-            {
-                if(node.Address == address)
-                {
-                    return true;
                 }
             }
             return false;
