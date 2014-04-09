@@ -18,6 +18,35 @@ namespace GraphDataStructure
             this._index = new Dictionary<string, int>();
         }
 
+        private void reIndex()
+        {
+            this._index = new Dictionary<string, int>();
+            for(int i = 0; i < _nodeList.Count; i++)
+            {
+                _index.Add(_nodeList[i].Address, i);
+            }
+        }
+
+        public void removeNeighbors()
+        {
+            reIndex();
+            List<Edge> edgesToRemove = new List<Edge>();
+            foreach(Node node in this._nodeList)
+            {
+                foreach(Edge edge in node.Neighbors)
+                {
+                    if(!_index.ContainsKey(edge.Target.Address))
+                    {
+                        edgesToRemove.Add(edge);
+                    }
+                }
+                foreach(Edge remove in edgesToRemove)
+                {
+                    node.Neighbors.Remove(remove);
+                }
+            }
+        }
+
         public List<Node> NodeSet
         {
             get {return this._nodeList;}
@@ -188,7 +217,6 @@ namespace GraphDataStructure
                     nodesToRemove.Add(node);
                 }
             }
-            this._index = null; //index is obsolete after nodes are removed from list
             foreach (Node node in nodesToRemove)
             {
                 this._nodeList.Remove(node);
@@ -197,6 +225,7 @@ namespace GraphDataStructure
 
         public void quickTrim()
         {
+            
             List<Node> nodesToRemove = new List<Node>();
             foreach(Node node in this._nodeList)
             {
@@ -205,11 +234,11 @@ namespace GraphDataStructure
                     nodesToRemove.Add(node);
                 }
             }
-            this._index = null; //index is obsolete after nodes are removed from list
             foreach(Node node in nodesToRemove)
             {
                 this._nodeList.Remove(node);
             }
+            removeNeighbors();
         }
 
         public bool pathFind(Node node, List<Edge> edges, int depth)
