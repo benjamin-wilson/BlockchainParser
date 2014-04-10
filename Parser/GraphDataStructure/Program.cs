@@ -18,7 +18,8 @@ namespace GraphDataStructure
 
             //temp.pathTrim(degrees+1);
             temp.quickTrim();
-            temp.writeListToFile(@"C:\Users\wilso_000\Desktop\AfterPruning.txt");
+            temp.writeListToFile(@"C:\Windows v2\AfterPruning.txt");
+            temp.writeJSONToFile(@"C:\Windows v2\JSON.txt");
         }
     }
 }
