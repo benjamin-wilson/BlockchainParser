@@ -11,14 +11,14 @@ namespace GraphDataStructure
         private string _address;
         private List<Edge> _neighbors;
         private int _degree;
-        private uint _overAllWeight;
+        private uint _weight;
          // This is used to create a weighted graph
 
         public Node()
         {
             this._address = null;
             this._neighbors = new List<Edge>();
-            this._overAllWeight = 1;
+            this._weight = 1;
             //this._value = new List<decimal>();
         }
 
@@ -26,7 +26,7 @@ namespace GraphDataStructure
         {
             this._address = data;
             this._neighbors = new List<Edge>();
-            this._overAllWeight = 1;
+            this._weight = 1;
             //this._value = new List<decimal>();
         }
 
@@ -34,7 +34,7 @@ namespace GraphDataStructure
         {
             this._address = data;
             this._neighbors = neighbors;
-            this._overAllWeight = 1;
+            this._weight = 1;
             //this._value = new List<decimal>();
         }
 
@@ -57,7 +57,8 @@ namespace GraphDataStructure
 
         public uint Weight
         {
-            get { return this._overAllWeight; }
+            get { return this._weight; }
+            set { this._weight = value; }
         }
         public void addNeighbor(Node neighbor, decimal cost, uint weight, int degree)
         {
@@ -118,9 +119,5 @@ namespace GraphDataStructure
             return -1;
         }
 
-        public void updateWeight(uint weight)
-        {
-            _overAllWeight += weight;
-        }
     }
 }
