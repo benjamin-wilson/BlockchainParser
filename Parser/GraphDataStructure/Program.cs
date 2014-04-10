@@ -18,6 +18,7 @@ namespace GraphDataStructure
 
             //temp.pathTrim(degrees+1);
             temp.quickTrim();
+            temp.overAllWeight();
             temp.writeListToFile(@"C:\Users\wilso_000\Desktop\AfterPruning.txt");
             temp.writeJSONToFile(@"C:\Users\wilso_000\Desktop\miserables.html");
         }

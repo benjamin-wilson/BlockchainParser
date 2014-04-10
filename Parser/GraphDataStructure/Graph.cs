@@ -92,7 +92,7 @@ namespace GraphDataStructure
                 int count = 0;
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName, true))
                 {
-                    file.Write(gnode.Address + ":---->");
+                    file.Write(gnode.Address + ":" + gnode.Weight + ":---->");
 
                     foreach (var neighbor in gnode.Neighbors)
                     {
@@ -292,6 +292,17 @@ namespace GraphDataStructure
                 }
             }
             return false;
+        }
+
+        public void overAllWeight()
+        {
+            foreach(var node in this._nodeList)
+            {
+                foreach(var neighbor in node.Neighbors)
+                {
+                    this._nodeList.ElementAt(getNode(neighbor.Target.Address)).updateWeight(neighbor.Weight);
+                }
+            }
         }
     }
 }
