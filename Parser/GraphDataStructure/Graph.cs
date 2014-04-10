@@ -189,36 +189,38 @@ namespace GraphDataStructure
                     List<Transaction> reciverList = database.getRecivedFrom(currentAddress);
 
                     Console.WriteLine(" Proc " + (sendersList.Count + reciverList.Count).ToString() + " trans");
-                    foreach (Transaction sender in sendersList)
+                    if (reciverList.Count + sendersList.Count < 500)
                     {
-                        if (!graph._index.ContainsKey(sender.target))
+                        foreach (Transaction sender in sendersList)
                         {
-                            nextDegree.Enqueue(sender.target);
-                            graph.addNode(sender.target, count+1);
-                            //graph.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value), sender.weight, count+1);
+                            if (!graph._index.ContainsKey(sender.target))
+                            {
+                                nextDegree.Enqueue(sender.target);
+                                graph.addNode(sender.target, count + 1);
+                                //graph.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value), sender.weight, count+1);
+                            }
+                            //else
+                            {
+                                graph.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value), sender.weight, count + 1);
+                            }
                         }
-                        //else
-                        {
-                            graph.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value), sender.weight, count+1);
-                        }
-                    }
 
-                    foreach (Transaction reciver in reciverList)
-                    {
-                        if (!graph._index.ContainsKey(reciver.source))
+                        foreach (Transaction reciver in reciverList)
                         {
-                            nextDegree.Enqueue(reciver.source);
-                            graph.addNode(reciver.source, count+1);
-                            //graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value), reciver.weight, count+1);
-                        }
-                        //else
-                        {
-                            graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value), reciver.weight, count+1);
+                            if (!graph._index.ContainsKey(reciver.source))
+                            {
+                                nextDegree.Enqueue(reciver.source);
+                                graph.addNode(reciver.source, -(count + 1));
+                                //graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value), reciver.weight, count+1);
+                            }
+                            //else
+                            {
+                                graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value), reciver.weight, count + 1);
+                            }
                         }
                     }
                 }
                 Console.WriteLine(currentDegree.Count);
-                Console.WriteLine(count);
                 if (currentDegree.Count <= 0)
                 {
                     count++;
@@ -252,7 +254,7 @@ namespace GraphDataStructure
             List<Node> nodesToRemove = new List<Node>();
             foreach(Node node in this._nodeList)
             {
-                if(node.Neighbors.Count <= 1)
+                if(node.Neighbors.Count <= 2)
                 {
                     nodesToRemove.Add(node);
                 }
