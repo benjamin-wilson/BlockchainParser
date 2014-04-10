@@ -24,15 +24,15 @@ namespace Database
             server = "localhost";
             database = "mydb";
             uid = "root";
-            password = "";
-            timeout = "1";
+            password = "tiny";
+            timeout = "100";
             string connectionString;
             connectionString = "SERVER=" + server + ";" + "DATABASE=" +
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";" + "Connect Timeout="+timeout;
 
             connection = new MySqlConnection(connectionString);
         }
-        private bool OpenConnection()
+        public bool OpenConnection()
         {
             try
             {
@@ -59,7 +59,7 @@ namespace Database
                 return false;
             }
         }
-        private bool CloseConnection()
+        public bool CloseConnection()
         {
             try
             {
@@ -98,24 +98,16 @@ namespace Database
             }
             query.Append(";");
 
-            //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Windows v2\bitcoinDatabaseLogs.txt", true))
-            //{
-            //    file.WriteLine(query);
-            //    file.WriteLine();
-            //}
 
-            //open connection
-            if (this.OpenConnection() == true)
-            {
-                //create command and assign the query and connection from the constructor
-                MySqlCommand cmd = new MySqlCommand(query.ToString(), connection);
+            //create command and assign the query and connection from the constructor
+            MySqlCommand cmd = new MySqlCommand(query.ToString(), connection);
 
-                //Execute command
-                cmd.ExecuteNonQuery();
+            //Execute command
+            cmd.ExecuteNonQuery();
 
-                //close connection
-                this.CloseConnection();
-            }
+            //close connection
+            //this.CloseConnection();
+
         }
         public void InsertInputs(List<Simplifiednput> inputs)
         {
@@ -139,18 +131,15 @@ namespace Database
                 isFirstElement = false;
             }
             query.Append(";");
-            //open connection
-            if (this.OpenConnection() == true)
-            {
-                //create command and assign the query and connection from the constructor
-                MySqlCommand cmd = new MySqlCommand(query.ToString(), connection);
+            //create command and assign the query and connection from the constructor
+            MySqlCommand cmd = new MySqlCommand(query.ToString(), connection);
 
-                //Execute command
-                cmd.ExecuteNonQuery();
+            //Execute command
+            cmd.ExecuteNonQuery();
 
-                //close connection
-                this.CloseConnection();
-            }
+            //close connection
+            //this.CloseConnection();
+            
         }
         public List<Transaction> getRecivedFrom(string address)
         {
@@ -164,44 +153,38 @@ namespace Database
                 query.Append("') AS totals ");
                 query.Append("where totals.previousTransactionHash = output.transactionHash and totals.previousTransactionOutputIndex = output.outputIndex group by output.publicAddress;");
 
-                if (this.OpenConnection() == true)
+                //Create Command
+                MySqlCommand cmd = new MySqlCommand(query.ToString(), connection);
+                cmd.CommandTimeout = 120;
+                //Create a data reader and Execute the command
+                try
                 {
-                    //Create Command
-                    MySqlCommand cmd = new MySqlCommand(query.ToString(), connection);
-                    cmd.CommandTimeout = 120;
-                    //Create a data reader and Execute the command
-                    try
+                    MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                    //Read the data and store them in the list
+                    while (dataReader.Read())
                     {
-                        MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                        //Read the data and store them in the list
-                        while (dataReader.Read())
-                        {
-                            Transaction transaction = new Transaction();
-                            transaction.source = (string)dataReader["source"];
-                            transaction.target = address;
-                            transaction.value = Convert.ToUInt64(dataReader["value"]);
-                            transaction.weight = Convert.ToUInt16(dataReader["weight"]);
-                            jsonList.Add(transaction);
-                        }
-
-                        //close Data Reader
-                        dataReader.Close();
-
-                        //close Connection
-                        this.CloseConnection();
-
-                        //return list to be displayed
-                        return jsonList;
-                    }catch(MySqlException e)
-                    {
-                        Console.WriteLine(e);
-                        return null;
+                        Transaction transaction = new Transaction();
+                        transaction.source = (string)dataReader["source"];
+                        transaction.target = address;
+                        transaction.value = Convert.ToUInt64(dataReader["value"]);
+                        transaction.weight = Convert.ToUInt16(dataReader["weight"]);
+                        jsonList.Add(transaction);
                     }
-                }
-                else
-                {
+
+                    //close Data Reader
+                    dataReader.Close();
+
+                    //close Connection
+                    //this.CloseConnection();
+
+                    //return list to be displayed
                     return jsonList;
+                }
+                catch(MySqlException e)
+                {
+                    Console.WriteLine(e);
+                    return null;
                 }
         }
         public List<Transaction> getSentTo(string address)
@@ -218,17 +201,13 @@ namespace Database
             query.Append("') AS totals ");
             query.Append("where totals.transactionHash = output.transactionHash group by output.publicAddress;");
 
-            if (this.OpenConnection() == true)
+            //Create Command
+            MySqlCommand cmd = new MySqlCommand(query.ToString(), connection);
+            cmd.CommandTimeout = 120;
+            //Create a data reader and Execute the command
+            try
             {
-                //Create Command
-                MySqlCommand cmd = new MySqlCommand(query.ToString(), connection);
-                cmd.CommandTimeout = 120;
-                //Create a data reader and Execute the command
-                try
-                {
-                    MySqlDataReader dataReader = cmd.ExecuteReader();
-
-                    
+                MySqlDataReader dataReader = cmd.ExecuteReader();
                 //Read the data and store them in the list
                 while (dataReader.Read())
                 {
@@ -244,21 +223,17 @@ namespace Database
                 dataReader.Close();
 
                 //close Connection
-                this.CloseConnection();
+                //this.CloseConnection();
 
                 //return list to be displayed
                 return jsonList;
-                }
-                catch (MySqlException e)
-                {
-                    Console.WriteLine(e);
-                    return null;
-                }
             }
-            else
+            catch (MySqlException e)
             {
-                return jsonList;
+                Console.WriteLine(e);
+                return null;
             }
+
         }
     }
 }

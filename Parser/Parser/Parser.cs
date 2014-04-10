@@ -11,12 +11,12 @@ namespace Parser
 {
     static class Parser
     {
-        static string path = @"C:\Users\New User\AppData\Roaming\Bitcoin\blocks\";
         static bool shouldExit = false;
-        static public void Parse()
+        static public void Parse(string path)
         {
             int fileIndex = 0;
             DBConnect mysql = new DBConnect();
+            mysql.OpenConnection();
             while (!shouldExit)
             {
                 
@@ -32,6 +32,7 @@ namespace Parser
                 else
                 {
                     shouldExit = true;
+                    mysql.CloseConnection();
                     Console.WriteLine("Done.");
                     Console.WriteLine("Outputs" + ScryptParser.outputs.ToString());
                     Console.WriteLine("Invalid : " + ScryptParser.invalidOutputAddresses.ToString());

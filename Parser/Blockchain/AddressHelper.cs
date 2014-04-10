@@ -9,8 +9,10 @@ using System.Numerics;
 
 namespace Blockchain
 {
+    
     public class AddressHelper
     {
+        const string ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
         public static string EllipticCurveToBTCAddress(byte[] key)
         {
             byte[] PreHashQ = AppendBitcoinNetwork(RipeMD160(Sha256(key)), 0);
@@ -62,7 +64,6 @@ namespace Blockchain
 
         private static string Base58Encode(byte[] array)
         {
-            const string ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
             string retString = string.Empty;
             BigInteger encodeSize = ALPHABET.Length;
             BigInteger arrayToInt = 0;

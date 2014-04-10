@@ -11,17 +11,13 @@ namespace GraphDataStructure
     {
         static void Main(string[] args)
         {
-            int degrees = 2;
-            //Used for testing
-            Graph temp = Graph.populate("16MEiyzg9qaB1RWBhmcYd8bicVcEiTQJrE", degrees);
-            //temp.writeListToFile(@"C:\Windows v2\BeforePruning.txt");
-
-            //temp.pathTrim(degrees+1);
-           
-            temp.weigh();
-            temp.trim();
-            temp.writeListToFile(@"C:\Users\wilso_000\Desktop\AfterPruning.txt");
-            temp.writeJSONToFile(@"C:\Users\wilso_000\Desktop\miserables.html");
+            /*
+            int degrees = 3;
+            Graph network = Graph.populate("16MEiyzg9qaB1RWBhmcYd8bicVcEiTQJrE", degrees);
+            network.weigh();
+            network.trim(100);
+            network.writeJSONToFile(@"C:\Users\wilso_000\Desktop\miserables.html",network.buildJsonString());
+             * */
         }
     }
 }

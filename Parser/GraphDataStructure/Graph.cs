@@ -29,7 +29,6 @@ namespace GraphDataStructure
 
         public void removeNeighbors()
         {
-            reIndex();
             List<Edge> edgesToRemove = new List<Edge>();
             foreach(Node node in this._nodeList)
             {
@@ -91,23 +90,19 @@ namespace GraphDataStructure
             }
         }
 
-        public void writeJSONToFile(string fileName)
+        public void writeJSONToFile(string fileName, string data)
         {
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName, true))
             {
-                file.Write(buildJsonString());
+                file.Write(data);
             }
         }
-
         public string buildNodeJsonString()
         {
             StringBuilder jsonString = new StringBuilder("\"nodes\": [ ");
             bool firstNodeSet = true;
-
-            int counter = 0;
             foreach (var node in this._nodeList)
             {
-                counter++;
                 if (firstNodeSet)
                 {
                     jsonString.Append("{\"name\":\"" + node.Address + "\",\"group\":" + node.Degree + "}");
@@ -118,32 +113,58 @@ namespace GraphDataStructure
                     jsonString.Append(",{\"name\":\"" + node.Address + "\",\"group\":" + node.Degree + "}");
                 }
             }
-            if (counter < this._nodeList.Count)
-            {
-                jsonString.Append("],");
-            }
+            jsonString.Append("],");
+
 
             return jsonString.ToString();
         }
-
         public string buildLinkJsonString()
         {
             StringBuilder jsonString = new StringBuilder("\"links\": [");
+            bool firstNode = true;
 
             for (int i = 0; i < this._nodeList.Count;i++ )
             {
                 for(int j = 0; j < this._nodeList.ElementAt(i).Neighbors.Count; j++)
                 {
-                    if (i == this._nodeList.Count - 1 && j == this._nodeList.ElementAt(i).Neighbors.Count-1)
+                    if (firstNode)
+                    {
+                        firstNode = false;
                         jsonString.Append("{\"source\":" + i + ",\"target\":" + getNode(this._nodeList.ElementAt(i).Neighbors.ElementAt(j).Target.Address) + ",\"value\":" + 1 + "}");
+                    }
                     else
-                        jsonString.Append("{\"source\":" + i + ",\"target\":" + getNode(this._nodeList.ElementAt(i).Neighbors.ElementAt(j).Target.Address) + ",\"value\":" + 1 + "},");
+                    {
+                        jsonString.Append(",{\"source\":" + i + ",\"target\":" + getNode(this._nodeList.ElementAt(i).Neighbors.ElementAt(j).Target.Address) + ",\"value\":" + 1 + "}");
+                    }
                 }
             }
             jsonString.Append("]");
             return jsonString.ToString();
         }
+        public string buildPathJsonString()
+        {
+            StringBuilder jsonString = new StringBuilder("\"links\": [");
+            bool firstLink = true;
+            for(int i = 0; i < this._nodeList.Count; i++)
+            {
 
+                for (int j = 0; j < this._nodeList.ElementAt(i).Neighbors.Count; j++)
+                {
+                    if (!firstLink)
+                    {
+                        jsonString.Append(",");
+                    }
+                    else
+                    {
+                        firstLink = false;
+                    }
+                    jsonString.Append("{source: \"" + this._nodeList.ElementAt(i).Address + "\", target: \"");
+                    jsonString.Append(this._nodeList.ElementAt(i).Neighbors.ElementAt(j).Target.Address + "\", type: \"suit\"}");
+                }
+            }
+            jsonString.Append("];");
+            return jsonString.ToString();
+        }
         public string buildJsonString()
         {
             StringBuilder jsonString = new StringBuilder("{");
@@ -201,7 +222,7 @@ namespace GraphDataStructure
                             if (!graph._index.ContainsKey(reciver.source))
                             {
                                 nextDegree.Enqueue(reciver.source);
-                                graph.addNode(reciver.source, -(count + 1));
+                                graph.addNode(reciver.source, count + 1);
                                 //graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value), reciver.weight, count+1);
                             }
                             //else
@@ -223,56 +244,27 @@ namespace GraphDataStructure
             return graph;
         }
 
-        public void pathTrim(int depth)
-        {
-            List<Node> nodesToRemove = new List<Node>();
-            foreach(Node node in this._nodeList)
-            {
-                if(!pathFind(node, node.Neighbors, depth))
-                {
-                    nodesToRemove.Add(node);
-                }
-            }
-            foreach (Node node in nodesToRemove)
-            {
-                this._nodeList.Remove(node);
-            }
-        }
-
         public void trim(int maxNumberOfNodes)
         {
-            foreach(Node node in this._nodeList)
+            int weightMinimum = 1;
+            while (this._nodeList.Count > maxNumberOfNodes)
             {
-
-            }
-        }
-
-        public bool pathFind(Node node, List<Edge> edges, int depth)
-        {
-            int currentDepth = depth - 1;
-            if(edges.Count <= 0 || depth <= 0)
-            {
-                return false;
-            }
-            else
-            {
-                foreach(Edge edge in edges)
+                List<Node> nodesToDelete = new List<Node>();
+                foreach (Node node in this._nodeList)
                 {
-                    List<Edge> neighbors = edge.Target.Neighbors;
-                    foreach(Edge neighbor in neighbors)
+                    if ((node.Weight)/(node.Degree+1 * node.Degree+1) < weightMinimum)
                     {
-                        if (neighbor.Target.Address == node.Address) 
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return pathFind(node, neighbors, currentDepth);
-                        }
+                        nodesToDelete.Add(node);
                     }
                 }
+                foreach(Node nodeToDelete in nodesToDelete)
+                {
+                    this._nodeList.Remove(nodeToDelete);
+                }
+                reIndex();
+                removeNeighbors();
+                weightMinimum++;
             }
-            return false;
         }
 
         public void weigh()
