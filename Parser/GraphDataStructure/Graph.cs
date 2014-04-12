@@ -69,27 +69,6 @@ namespace GraphDataStructure
             return this._index[nodeAddress];
         }
 
-
-        public void writeListToFile(string fileName)
-        {
-            foreach (var gnode in this._nodeList)
-            {
-                int count = 0;
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName, true))
-                {
-                    file.Write(gnode.Address + ":" + gnode.Weight + ":---->");
-
-                    foreach (var neighbor in gnode.Neighbors)
-                    {
-                        file.Write(neighbor.Target.Address + ":" + neighbor.Weight + ":"+ neighbor.Value + ":"+ neighbor.Degree + " , ");
-                        count++;
-                    }
-
-                    file.WriteLine();
-                }
-            }
-        }
-
         public void writeJSONToFile(string fileName, string data)
         {
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName, true))
@@ -141,30 +120,6 @@ namespace GraphDataStructure
             jsonString.Append("]");
             return jsonString.ToString();
         }
-        public string buildPathJsonString()
-        {
-            StringBuilder jsonString = new StringBuilder("\"links\": [");
-            bool firstLink = true;
-            for(int i = 0; i < this._nodeList.Count; i++)
-            {
-
-                for (int j = 0; j < this._nodeList.ElementAt(i).Neighbors.Count; j++)
-                {
-                    if (!firstLink)
-                    {
-                        jsonString.Append(",");
-                    }
-                    else
-                    {
-                        firstLink = false;
-                    }
-                    jsonString.Append("{source: \"" + this._nodeList.ElementAt(i).Address + "\", target: \"");
-                    jsonString.Append(this._nodeList.ElementAt(i).Neighbors.ElementAt(j).Target.Address + "\", type: \"suit\"}");
-                }
-            }
-            jsonString.Append("];");
-            return jsonString.ToString();
-        }
         public string buildJsonString()
         {
             StringBuilder jsonString = new StringBuilder("{");
@@ -176,9 +131,11 @@ namespace GraphDataStructure
             return jsonString.ToString();
         }
 
-        public static Graph populate(string publicAddress, int degree)
+        public static Graph populate(string publicAddress, int degree, int tooBigToAddToNetwork)
         {
             DBConnect database = new DBConnect();
+            database.OpenConnection();
+            database.SetMaxAddressQuerryTime(500);
             Graph graph = new Graph();
             int count = 0;
 
@@ -199,40 +156,42 @@ namespace GraphDataStructure
                 {
                     List<Transaction> sendersList = database.getSentTo(currentAddress);
                     List<Transaction> reciverList = database.getRecivedFrom(currentAddress);
-
-                    Console.WriteLine(" Proc " + (sendersList.Count + reciverList.Count).ToString() + " trans");
-                    if (reciverList.Count + sendersList.Count < 500)
+                    if (sendersList != null && reciverList != null)
                     {
-                        foreach (Transaction sender in sendersList)
+                        Console.WriteLine(" Proc " + (sendersList.Count + reciverList.Count).ToString() + " trans");
+                        if (sendersList.Count < tooBigToAddToNetwork)
                         {
-                            if (!graph._index.ContainsKey(sender.target))
+                            foreach (Transaction sender in sendersList)
                             {
-                                nextDegree.Enqueue(sender.target);
-                                graph.addNode(sender.target, count + 1);
-                                //graph.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value), sender.weight, count+1);
+                                if (!graph._index.ContainsKey(sender.target))
+                                {
+                                    nextDegree.Enqueue(sender.target);
+                                    graph.addNode(sender.target, count + 1);
+                                    //graph.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value), sender.weight, count+1);
+                                }
+                                //else
+                                {
+                                    graph.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value), sender.weight, count + 1);
+                                }
                             }
-                            //else
-                            {
-                                graph.addDirectedEdge(sender.source, sender.target, Convert.ToDecimal(sender.value), sender.weight, count + 1);
-                            }
-                        }
 
-                        foreach (Transaction reciver in reciverList)
-                        {
-                            if (!graph._index.ContainsKey(reciver.source))
+                            foreach (Transaction reciver in reciverList)
                             {
-                                nextDegree.Enqueue(reciver.source);
-                                graph.addNode(reciver.source, count + 1);
-                                //graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value), reciver.weight, count+1);
-                            }
-                            //else
-                            {
-                                graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value), reciver.weight, count + 1);
+                                if (!graph._index.ContainsKey(reciver.source))
+                                {
+                                    nextDegree.Enqueue(reciver.source);
+                                    graph.addNode(reciver.source, count + 1);
+                                    //graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value), reciver.weight, count+1);
+                                }
+                                //else
+                                {
+                                    graph.addDirectedEdge(reciver.source, reciver.target, Convert.ToDecimal(reciver.value), reciver.weight, count + 1);
+                                }
                             }
                         }
                     }
                 }
-                Console.WriteLine(currentDegree.Count);
+                Console.WriteLine(currentDegree.Count+" queries to go");
                 if (currentDegree.Count <= 0)
                 {
                     count++;
@@ -240,7 +199,7 @@ namespace GraphDataStructure
                     nextDegree = new Queue<string>();
                 }
             }
-
+            database.CloseConnection();
             return graph;
         }
 
@@ -252,7 +211,7 @@ namespace GraphDataStructure
                 List<Node> nodesToDelete = new List<Node>();
                 foreach (Node node in this._nodeList)
                 {
-                    if ((node.Weight)/(node.Degree+1 * node.Degree+1) < weightMinimum)
+                    if ((node.Weight < weightMinimum) || node.Neighbors.Count <= 0)
                     {
                         nodesToDelete.Add(node);
                     }
@@ -263,6 +222,7 @@ namespace GraphDataStructure
                 }
                 reIndex();
                 removeNeighbors();
+                weigh();
                 weightMinimum++;
             }
         }
@@ -273,6 +233,7 @@ namespace GraphDataStructure
             {
                 foreach(var neighbor in node.Neighbors)
                 {
+                    
                     this._nodeList.ElementAt(getNode(neighbor.Target.Address)).Weight = neighbor.Weight;
                 }
             }

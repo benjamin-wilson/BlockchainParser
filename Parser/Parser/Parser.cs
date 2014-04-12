@@ -32,6 +32,7 @@ namespace Parser
                 else
                 {
                     shouldExit = true;
+                    mysql.UnlockTables();
                     mysql.CloseConnection();
                     Console.WriteLine("Done.");
                     Console.WriteLine("Outputs" + ScryptParser.outputs.ToString());

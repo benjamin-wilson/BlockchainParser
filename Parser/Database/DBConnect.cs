@@ -32,6 +32,19 @@ namespace Database
 
             connection = new MySqlConnection(connectionString);
         }
+        public void SetMaxAddressQuerryTime(int time)
+        {
+            string querry = "SET SESSION MAX_STATEMENT_TIME="+time.ToString()+";";
+            MySqlCommand cmd = new MySqlCommand(querry, connection);
+            cmd.ExecuteNonQuery();
+        }
+
+        public void UnlockTables()
+        {
+            string querry = "UNLOCK TABLES;";
+            MySqlCommand cmd = new MySqlCommand(querry, connection);
+            cmd.ExecuteNonQuery();
+        }
         public bool OpenConnection()
         {
             try
@@ -75,7 +88,7 @@ namespace Database
         public void InsertOutputs(List<SimplifiedOutput> outputs)
         {
             StringBuilder query = new StringBuilder();
-            query.Append("INSERT INTO output (value, publicAddress, outputIndex, transactionHash, timestamp) VALUES");
+            query.Append("LOCK TABLES output WRITE; INSERT INTO output (value, publicAddress, outputIndex, transactionHash, timestamp) VALUES");
             bool isFirstElement = true;
             foreach(SimplifiedOutput output in outputs)
             {
@@ -112,7 +125,7 @@ namespace Database
         public void InsertInputs(List<Simplifiednput> inputs)
         {
             StringBuilder query = new StringBuilder();
-            query.Append("INSERT INTO input (transactionHash, previousTransactionHash, previousTransactionOutputIndex) VALUES");
+            query.Append("LOCK TABLES input WRITE; INSERT INTO input (transactionHash, previousTransactionHash, previousTransactionOutputIndex) VALUES");
             bool isFirstElement = true;
             foreach (Simplifiednput input in inputs)
             {
@@ -183,7 +196,7 @@ namespace Database
                 }
                 catch(MySqlException e)
                 {
-                    Console.WriteLine(e);
+                    Console.WriteLine("Skipping");
                     return null;
                 }
         }
@@ -230,7 +243,7 @@ namespace Database
             }
             catch (MySqlException e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine("Skipping");
                 return null;
             }
 
