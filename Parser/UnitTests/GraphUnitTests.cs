@@ -9,7 +9,7 @@ namespace UnitTests
         [TestMethod]
         public void Populate_Graph_Duplicate_Check()
         {
-            var temp = GraphDataStructure.Graph.populate("1Ka3xYZb6tZQabpkFCnpqods6gC8iNEcZ7", 1);
+            var temp = GraphDataStructure.Graph.populate("1Ka3xYZb6tZQabpkFCnpqods6gC8iNEcZ7", 1, 150);
 
             foreach(var item in temp.NodeSet)
             {
